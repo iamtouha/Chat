@@ -1,0 +1,80 @@
+ 
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  username    String   @unique
+  active      Boolean  @default(false)
+  role        USER_ROLE @default(USER)
+  companies   Company[]
+  password    String   
+  salt        String
+  sessionToken String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String   
+  approved    Boolean  @default(false)
+  storageLimit Int     @default(0)
+  userId      String 
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  conversations Conversation[]
+
+  @@index([userId])
+}
+
+model Conversation {
+  id         String   @id @default(uuid())
+  name       String
+  email      String
+  phone      String?
+  companyId  String
+  company    Company @relation(fields: [companyId], references: [id])
+  messages   Message[]
+  createdAt  DateTime @default(now())
+  lastActive DateTime @default(now())
+
+  @@index([companyId])
+}
+ model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  content        String
+  contentType    CONTENT_TYPE @default(TEXT)
+  type           MESSAGE_TYPE
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+ }
+
+enum USER_ROLE {
+  ADMIN
+  USER
+}
+enum MESSAGE_TYPE {
+  INBOUND
+  OUTBOUND
+}
+enum CONTENT_TYPE {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+}
