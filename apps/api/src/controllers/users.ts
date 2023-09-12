@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { getUser, updateUser } from '../providers/users';
+import { getUser, getUsers, updateUser } from '../providers/users';
 
 export const getProfile = async (req: Request, res: Response) => {
   if (!req.user) return;
@@ -33,7 +33,17 @@ export const makeAdmin = async (req: Request, res: Response) => {
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
-  const users = await getUser({});
+  const users = await getUsers({
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+      lastLogin: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
   return res.status(200).json({
     status: 'success',
     message: 'Users retrieved successfully',
@@ -43,7 +53,18 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getUserFromId = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = await getUser({ where: { id } });
+  const user = await getUser({
+    where: { id },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+      lastLogin: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
   if (!user) {
     return res.status(404).json({
       status: 'error',
