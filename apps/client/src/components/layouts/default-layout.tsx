@@ -1,10 +1,10 @@
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useNavigate } from 'react-router-dom';
 import { Navbar } from '../ui/navbar';
 import { Spinner } from '@nextui-org/react';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import { User } from '../../types';
-import { useUserStore } from '../../store/userStore';
+import axios, { AxiosError } from 'axios';
+import { User } from '@/types';
+import { useUserStore } from '@/store/userStore';
 
 type ResponseType = {
   status: string;
@@ -13,6 +13,7 @@ type ResponseType = {
 };
 
 export const DefaultLayout = () => {
+  const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const { isLoading } = useQuery(
@@ -23,6 +24,13 @@ export const DefaultLayout = () => {
     },
     {
       onSuccess: (data) => setUser(data),
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          if (err.response && err.response?.status > 400) {
+            navigate('/auth/login');
+          }
+        }
+      },
     },
   );
 

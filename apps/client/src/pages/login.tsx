@@ -31,7 +31,7 @@ export const Login = () => {
     resolver: zodResolver(loginFormSchema),
   });
 
-  const { mutate: login } = useMutation(
+  const { mutate: login, isLoading } = useMutation(
     ['login'],
     async (data: LoginForm) => await axios.post('/api/v1/auth/login', data),
     {
@@ -75,7 +75,12 @@ export const Login = () => {
               />
             </CardBody>
             <CardFooter>
-              <Button color="primary" size="lg" type="submit">
+              <Button
+                color="primary"
+                size="lg"
+                type="submit"
+                isLoading={isLoading}
+              >
                 Submit
               </Button>
             </CardFooter>

@@ -6,6 +6,8 @@ import {
 import { createUser, getUser, updateUser } from '../providers/users.provider';
 import { hashPassword, random, parseZodError } from '../lib/helpers';
 
+const COOKIE_NAME = 'AUTH_TOKEN';
+
 export const login = async (req: Request, res: Response) => {
   const result = loginInputSchema.safeParse(req.body);
   if (!result.success) {
@@ -40,10 +42,11 @@ export const login = async (req: Request, res: Response) => {
     },
     select: { id: true, username: true, email: true, sessionToken: true },
   });
-  res.cookie('AUTH_TOKEN', sessionToken, {
+  res.cookie(COOKIE_NAME, sessionToken, {
     domain: 'localhost',
     path: '/',
     httpOnly: true,
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
   });
   return res.status(200).json({
     status: 'success',
@@ -91,4 +94,12 @@ export const register = async (req: Request, res: Response) => {
     console.error(error);
     return res.status(500).send({ message: 'Internal Server Error' });
   }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  res.clearCookie(COOKIE_NAME);
+  return res.json({
+    status: 'success',
+    message: 'User logged out successfully',
+  });
 };
