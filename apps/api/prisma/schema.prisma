@@ -16,7 +16,7 @@ model User {
   username    String   @unique
   active      Boolean  @default(false)
   role        USER_ROLE @default(USER)
-  companies   Company[]
+  conversations Conversation[]
   password    String   
   salt        String
   sessionToken String?
@@ -25,32 +25,18 @@ model User {
   lastLogin  DateTime?
 }
 
-model Company {
-  id          String   @id @default(uuid())
-  name        String   
-  approved    Boolean  @default(false)
-  storageLimit Int     @default(0)
-  userId      String 
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  conversations Conversation[]
-
-  @@index([userId])
-}
-
 model Conversation {
   id         String   @id @default(uuid())
   name       String
   email      String
   phone      String?
-  companyId  String
-  company    Company @relation(fields: [companyId], references: [id])
+  userId     String
+  user       User @relation(fields: [userId], references: [id])
   messages   Message[]
   createdAt  DateTime @default(now())
   lastActive DateTime @default(now())
 
-  @@index([companyId])
+  @@index([userId])
 }
  model Message {
   id             String       @id @default(uuid())
