@@ -1,10 +1,9 @@
 import { Outlet, Navigate, useNavigate } from 'react-router-dom';
-import { Header } from '@/components/header';
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { User } from '@/types';
 import { useUserStore } from '@/store/userStore';
-import { Icons } from '../icons';
+import { Icons } from './icons';
 
 type ResponseType = {
   status: string;
@@ -45,7 +44,6 @@ export const DefaultLayout = () => {
 
   return (
     <>
-      <Header />
       <Outlet />
     </>
   );

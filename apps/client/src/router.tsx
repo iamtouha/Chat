@@ -1,8 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { Home } from './views/home';
-import { DefaultLayout } from './components/layouts/default-layout';
+import { HomeLayout } from './views/home';
+import { DefaultLayout } from './components/auth-guard';
 import { AuthLayout } from './components/layouts/auth-layout';
+import { SelectChat } from './components/select-chat';
 import { Login } from './views/login';
+import { ChatPage } from './views/chat';
 
 export const router = createBrowserRouter([
   {
@@ -10,8 +12,18 @@ export const router = createBrowserRouter([
     element: <DefaultLayout />,
     children: [
       {
-        index: true,
-        element: <Home />,
+        path: '/',
+        element: <HomeLayout />,
+        children: [
+          {
+            index: true,
+            element: <SelectChat />,
+          },
+          {
+            path: '/chat',
+            element: <ChatPage />,
+          },
+        ],
       },
     ],
   },
