@@ -4,8 +4,8 @@ import {
   getProfile,
   getUserFromId,
   makeAdmin,
-} from '../controllers/users';
-import { isAdmin } from '../middlewares/auth';
+} from '../controllers/users.controller';
+import { isAdmin } from '../middlewares/auth.middleware';
 
 const usersRouter = Router();
 

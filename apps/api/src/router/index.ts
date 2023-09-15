@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import authRouter from './auth';
-import usersRouter from './users';
-import { isAdmin, isAuthenticated } from '../middlewares/auth';
+import authRouter from './auth.router';
+import usersRouter from './users.router';
+import { isAdmin, isAuthenticated } from '../middlewares/auth.middleware';
 
 const router = Router();
 

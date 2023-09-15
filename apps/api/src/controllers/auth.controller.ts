@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { loginInputSchema, registerInputSchema } from '../lib/schemas/auth';
-import { createUser, getUser, updateUser } from '../providers/users';
+import { loginInputSchema, registerInputSchema } from '../validators/auth.validator';
+import { createUser, getUser, updateUser } from '../providers/users.provider';
 import { hashPassword, random, parseZodError } from '../lib/helpers';
 
 export const login = async (req: Request, res: Response) => {

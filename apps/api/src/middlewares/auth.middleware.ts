@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { getUser } from '../providers/users';
+import { getUser } from '../providers/users.provider';
 
 export const isAuthenticated = async (
   req: Request,
