@@ -1,10 +1,10 @@
 import { Outlet, Navigate, useNavigate } from 'react-router-dom';
-import { Navbar } from '../ui/navbar';
-import { Spinner } from '@nextui-org/react';
+import { Header } from '@/components/header';
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { User } from '@/types';
 import { useUserStore } from '@/store/userStore';
+import { Icons } from '../icons';
 
 type ResponseType = {
   status: string;
@@ -23,7 +23,7 @@ export const DefaultLayout = () => {
       return res.data.result;
     },
     {
-      onSuccess: (data) => setUser(data),
+      onSuccess: (data) => setUser(data ?? null),
       onError: (err) => {
         if (err instanceof AxiosError) {
           if (err.response && err.response?.status > 400) {
@@ -37,7 +37,7 @@ export const DefaultLayout = () => {
   if (isLoading)
     return (
       <div className="h-screen grid place-items-center">
-        <Spinner size="lg" />
+        <Icons.spinner className="animate-spin w-12 h-12" />
       </div>
     );
 
@@ -45,7 +45,7 @@ export const DefaultLayout = () => {
 
   return (
     <>
-      <Navbar />
+      <Header />
       <Outlet />
     </>
   );

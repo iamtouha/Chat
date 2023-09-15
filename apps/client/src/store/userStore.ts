@@ -3,7 +3,7 @@ import { User } from '../types';
 
 interface UserStore {
   user: User | null;
-  setUser: (user: User | undefined) => void;
+  setUser: (user: User | null) => void;
 }
 
 export const useUserStore = create<UserStore>()((set) => ({
