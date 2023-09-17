@@ -21,10 +21,11 @@ export const createConversation = async (req: Request, res: Response) => {
       userId: result.data.clientId,
       lastActive: new Date(),
     },
+    select: { id: true, user: { select: { username: true } } },
   });
   return res.status(200).json({
     status: 'success',
     message: 'Conversation created successfully',
-    result: conversation,
+    result: { conversationId: conversation.id },
   });
 };
