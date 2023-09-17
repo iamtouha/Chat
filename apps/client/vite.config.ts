@@ -9,6 +9,7 @@ export default defineConfig({
     alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
   },
   server: {
+    port: 4000,
     proxy: {
       '/api': { target: 'http://localhost:3000' },
     },
