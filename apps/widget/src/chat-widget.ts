@@ -18,7 +18,7 @@ export class ChatWidget extends LitElement {
       </button>
       <div class="chat-box">
         <user-form
-          ?show="${!this.conversationid.length}"
+          ?hidden="${!!this.conversationid.length}"
           ?loading="${this._conversationLoading}"
         ></user-form>
       </div>
@@ -31,7 +31,6 @@ export class ChatWidget extends LitElement {
     if (conversationid) {
       this.conversationid = conversationid;
     }
-    console.log(this._serverUrl);
     this.addEventListener('user-form-submit', async (e) => {
       const data = (e as CustomEvent).detail;
       await this._createConversation(data);
@@ -43,7 +42,7 @@ export class ChatWidget extends LitElement {
     const response = await fetch(`${this._serverUrl}/api/v1/conversations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(info),
+      body: JSON.stringify({ ...info, clientId: this.clientid }),
     });
     if (!response.ok) {
       this._conversationLoading = false;
@@ -51,8 +50,10 @@ export class ChatWidget extends LitElement {
     }
     const data = await response.json();
     this._conversationLoading = false;
-    this.conversationid = data.conversationId;
-    localStorage.setItem('conversationid', data.conversationid);
+    if (data?.status === 'success') {
+      this.conversationid = data.result.conversationId;
+      localStorage.setItem('conversationid', data.result.conversationId);
+    }
   };
 
   static styles = css`

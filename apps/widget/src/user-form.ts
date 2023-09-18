@@ -3,11 +3,11 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('user-form')
 export class UserForm extends LitElement {
-  @property({ type: Boolean }) show = true;
+  @property({ type: Boolean }) hidden = true;
   @property({ type: Boolean }) loading = false;
 
   render() {
-    return html`<div class="form-wrapper ${this.show ? '' : 'hidden'}">
+    return html`<div class="form-wrapper ${this.hidden ? 'hidden' : ''}">
       <p>
         Please provide the following information before starting the
         conversation:
