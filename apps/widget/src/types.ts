@@ -1,10 +1,3 @@
-export type User = {
-  id: string;
-  username: string;
-  email: number;
-  lastLogin: string;
-};
-
 export type Conversation = {
   id: string;
   name: string;
@@ -17,7 +10,7 @@ export type Conversation = {
 
 export type Message = {
   type: 'INBOUND' | 'OUTBOUND';
-  createdAt: string;
+  createdAt: Date;
   content: string;
   contentType: 'TEXT' | 'IMAGE' | 'FILE' | 'VIDEO' | 'AUDIO';
   seen: boolean;

@@ -3,7 +3,6 @@ import { getUser, getUsers, updateUser } from '../providers/users.provider';
 
 export const getProfile = async (req: Request, res: Response) => {
   if (!req.user) return;
-  console.log('req loading');
   return res.status(200).json({
     status: 'success',
     message: 'User profile retrieved successfully',

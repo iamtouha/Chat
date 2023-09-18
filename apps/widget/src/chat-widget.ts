@@ -1,15 +1,19 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
+import socket from './socket';
+import type { Conversation, Message } from './types';
 import './user-form';
 
 @customElement('chat-widget')
 export class ChatWidget extends LitElement {
   @property({ type: Boolean }) open = false;
   @property() clientid = '';
-  @property() conversationid = '';
+
+  @state() private _conversationid = '';
+  @state() private _conversationLoading = false;
+  @state() private _messages: Message[] = [];
 
   _serverUrl = import.meta.env.VITE_APP_SERVER_URL as string;
-  _conversationLoading = false;
 
   render() {
     return html` <div class="box ${this.open ? 'open' : ''}">
@@ -18,25 +22,33 @@ export class ChatWidget extends LitElement {
       </button>
       <div class="chat-box">
         <user-form
-          ?hidden="${!!this.conversationid.length}"
+          ?hidden="${!!this._conversationid.length}"
           ?loading="${this._conversationLoading}"
         ></user-form>
+        ${this._messages.map((message) => message.content).join()}
       </div>
     </div>`;
+  }
+
+  requestUpdate(name?: PropertyKey, oldValue?: unknown) {
+    super.requestUpdate(name, oldValue);
+    if (name === '_conversationid' && this._conversationid) {
+      this._fetchConversation();
+      socket.emit('user_connected', this._conversationid);
+    }
   }
 
   connectedCallback() {
     super.connectedCallback();
     const conversationid = localStorage.getItem('conversationid');
     if (conversationid) {
-      this.conversationid = conversationid;
+      this._conversationid = conversationid;
     }
     this.addEventListener('user-form-submit', async (e) => {
       const data = (e as CustomEvent).detail;
       await this._createConversation(data);
     });
   }
-
   _createConversation = async (info: { name: string; email: string }) => {
     this._conversationLoading = true;
     const response = await fetch(`${this._serverUrl}/api/v1/conversations`, {
@@ -50,10 +62,30 @@ export class ChatWidget extends LitElement {
     }
     const data = await response.json();
     this._conversationLoading = false;
-    if (data?.status === 'success') {
-      this.conversationid = data.result.conversationId;
-      localStorage.setItem('conversationid', data.result.conversationId);
+    if (data?.status !== 'success') {
+      return;
     }
+    this._conversationid = data.result.id;
+    socket.emit('conversation_started', this.clientid);
+    localStorage.setItem('conversationid', this._conversationid);
+  };
+  _fetchConversation = async () => {
+    if (!this._conversationid) return;
+    const response = await fetch(
+      `${this._serverUrl}/api/v1/conversations/${this._conversationid}`,
+    );
+    if (!response.ok) {
+      this._conversationLoading = false;
+      return;
+    }
+    if (response.status === 404) {
+      this._conversationid = '';
+      localStorage.removeItem('conversationid');
+      return;
+    }
+    const data = await response.json();
+    const conv = data.result as Conversation & { messages: Message[] };
+    this._messages = conv.messages;
   };
 
   static styles = css`

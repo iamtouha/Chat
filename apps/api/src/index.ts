@@ -1,8 +1,13 @@
 import { User } from '@prisma/client';
-import { createServer } from './server';
+import { server, io } from './server';
+import { initializeSocket } from './sockets';
 
-const port = process.env.PORT || 3000;
-const server = createServer();
+const port = parseInt(process.env.PORT ?? '') || 3000;
+
+server.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});
+initializeSocket(io);
 
 declare global {
   namespace Express {
@@ -11,7 +16,3 @@ declare global {
     }
   }
 }
-
-server.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
-});

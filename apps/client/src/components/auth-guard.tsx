@@ -4,6 +4,8 @@ import axios, { AxiosError } from 'axios';
 import { User } from '@/types';
 import { useUserStore } from '@/store/userStore';
 import { Icons } from './icons';
+import socket from '@/socket';
+import { useEffect } from 'react';
 
 type ResponseType = {
   status: string;
@@ -32,6 +34,17 @@ export const DefaultLayout = () => {
       },
     },
   );
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const onSocketConnect = () => {
+      socket.emit('user_connected', user?.id);
+    };
+    socket.on('connect', onSocketConnect);
+    return () => {
+      socket.off('connect', onSocketConnect);
+    };
+  }, [user?.id]);
 
   if (isLoading)
     return (

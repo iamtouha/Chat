@@ -1,12 +1,14 @@
-import { json, urlencoded } from 'body-parser';
+import http from 'http';
 import express from 'express';
-import compression from 'compression';
+import { Server } from 'socket.io';
 import cors from 'cors';
+import morgan from 'morgan';
+import compression from 'compression';
+import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import router from './router';
-import morgan from 'morgan';
 
-export const createServer = () => {
+export const createApp = () => {
   const app = express();
   app
     .disable('x-powered-by')
@@ -21,3 +23,6 @@ export const createServer = () => {
 
   return app;
 };
+
+export const server = http.createServer(createApp());
+export const io = new Server(server, { cors: { origin: '*' } });
