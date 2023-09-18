@@ -38,6 +38,7 @@ CREATE TABLE `Message` (
     `content` VARCHAR(191) NOT NULL,
     `contentType` ENUM('TEXT', 'IMAGE', 'VIDEO', 'AUDIO', 'FILE') NOT NULL DEFAULT 'TEXT',
     `type` ENUM('INBOUND', 'OUTBOUND') NOT NULL,
+    `seen` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Message_conversationId_idx`(`conversationId`),

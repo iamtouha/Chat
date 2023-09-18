@@ -45,6 +45,7 @@ model Conversation {
   content        String
   contentType    CONTENT_TYPE @default(TEXT)
   type           MESSAGE_TYPE
+  seen           Boolean      @default(false)
   createdAt      DateTime     @default(now())
 
   @@index([conversationId])
