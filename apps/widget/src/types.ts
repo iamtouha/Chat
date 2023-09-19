@@ -9,11 +9,13 @@ export type Conversation = {
 };
 
 export type Message = {
+  id: string;
   type: 'INBOUND' | 'OUTBOUND';
-  createdAt: Date;
+  createdAt: string;
   content: string;
   contentType: 'TEXT' | 'IMAGE' | 'FILE' | 'VIDEO' | 'AUDIO';
   seen: boolean;
+  conversationId?: string;
 };
 
 export type ResponsePayload<T> =

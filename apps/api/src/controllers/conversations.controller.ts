@@ -42,6 +42,7 @@ export const fetchConversations = async (req: Request, res: Response) => {
     include: {
       messages: {
         select: {
+          id: true,
           type: true,
           content: true,
           contentType: true,
@@ -65,12 +66,13 @@ export const fetchConversation = async (req: Request, res: Response) => {
     include: {
       messages: {
         select: {
+          id: true,
           type: true,
           content: true,
           contentType: true,
           createdAt: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: 'asc' },
       },
     },
   });

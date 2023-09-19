@@ -1,13 +1,15 @@
 import { Server } from 'socket.io';
 import { conversationsSocket } from './conversations.socket';
+import { messagesSocket } from './messages.socket';
 
 const socketIdMap = new Map<string, string>();
 
 export const initializeSocket = (io: Server) => {
   io.of('/api/v1').on('connection', (socket) => {
     socket.on('user_connected', (id) => {
-      console.log('user_connected', id);
       socketIdMap.set(id, socket.id);
+      console.log('user_connected', id, socket.id);
+      console.log(socketIdMap);
     });
     socket.on('disconnect', () => {
       socketIdMap.forEach((value, key) => {
@@ -16,5 +18,6 @@ export const initializeSocket = (io: Server) => {
     });
 
     conversationsSocket(socket, socketIdMap);
+    messagesSocket(socket, socketIdMap);
   });
 };

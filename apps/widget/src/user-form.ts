@@ -7,7 +7,6 @@ export class UserForm extends LitElement {
   @property({ type: Boolean }) loading = false;
 
   render() {
-    console.log(this.hidden);
     return html`<div class="form-wrapper ${this.hidden ? 'hidden' : ''}">
       <p>
         Please provide the following information before starting the
@@ -34,7 +33,6 @@ export class UserForm extends LitElement {
     const formData = new FormData(e.target as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
     if (data.name && data.email) {
-      console.log(data);
       this.dispatchEvent(
         new CustomEvent('user-form-submit', {
           detail: data,
@@ -53,6 +51,9 @@ export class UserForm extends LitElement {
       padding: 0;
       color: #2c2c2c;
     }
+    .form-wrapper {
+      padding: 10px;
+    }
     .form-wrapper.hidden {
       display: none;
     }
@@ -62,9 +63,9 @@ export class UserForm extends LitElement {
       flex-direction: column;
     }
     input {
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 10px;
       background-color: #ddd;
       color: #222;
     }
