@@ -5,11 +5,10 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
 import { useUserStore } from '@/store/userStore';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Icons } from './icons';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
@@ -44,21 +43,6 @@ export const UserButton = () => {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link to="/account">
-              <Icons.user className="mr-2 h-4 w-4" aria-hidden="true" />
-              Account
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/">
-              <Icons.terminal className="mr-2 h-4 w-4" aria-hidden="true" />
-              Dashboard
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild onClick={() => logOut()}>
           <p>

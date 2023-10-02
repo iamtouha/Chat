@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { User } from '@/types';
 import { useUserStore } from '@/store/userStore';
+import { toast } from 'react-toastify';
 import { Icons } from './icons';
 
 type ResponseType = {
@@ -18,16 +19,25 @@ export const DefaultLayout = () => {
   const { isLoading } = useQuery(
     ['profile'],
     async () => {
-      const res = await axios.get<ResponseType>('/api/v1/users/profile');
+      const res = await axios.get<ResponseType>(
+        '/api/v1/users/profile?admin=true',
+      );
       return res.data.result;
     },
     {
-      onSuccess: (data) => setUser(data ?? null),
+      onSuccess: (data) => {
+        if (data?.role !== 'ADMIN') {
+          toast.error('You are not authorized to access this page');
+          navigate('/auth/login');
+        }
+        setUser(data ?? null);
+      },
       onError: (err) => {
         if (err instanceof AxiosError) {
           if (err.response && err.response?.status > 400) {
             navigate('/auth/login');
           }
+          toast.error(err.response?.data.message ?? err.message);
         }
       },
     },

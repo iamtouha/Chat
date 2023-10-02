@@ -3,6 +3,7 @@ export type User = {
   username: string;
   email: number;
   lastLogin: string;
+  role: 'ADMIN' | 'USER';
 };
 
 export type Conversation = {

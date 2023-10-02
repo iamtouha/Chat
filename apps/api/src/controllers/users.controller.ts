@@ -2,15 +2,26 @@ import type { Request, Response } from 'express';
 import { getUser, getUsers, updateUser } from '../providers/users.provider';
 
 export const getProfile = async (req: Request, res: Response) => {
-  if (!req.user) return;
+  if (!req.user)
+    return res.status(403).json({
+      status: 'error',
+      message: 'Unauthorized',
+    });
+  if (req.query.admin === 'true' && req.user.role !== 'ADMIN') {
+    return res.status(403).json({
+      status: 'error',
+      message: "you're not authrized to perform this action",
+    });
+  }
   return res.status(200).json({
     status: 'success',
     message: 'User profile retrieved successfully',
     result: {
-      id: req.user?.id,
-      username: req.user?.username,
-      email: req.user?.email,
-      lastLogin: req.user?.lastLogin,
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+      lastLogin: req.user.lastLogin,
+      role: req.query.admin === 'true' ? req.user.role : undefined,
     },
   });
 };
