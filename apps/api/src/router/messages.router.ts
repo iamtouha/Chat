@@ -4,7 +4,7 @@ import {
   fetchMessages,
 } from '../controllers/messages.controller';
 
-const messagesRouter = Router();
+const messagesRouter: Router = Router();
 
 messagesRouter.post('/', createMessage);
 messagesRouter.get('/', fetchMessages);

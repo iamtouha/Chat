@@ -7,7 +7,7 @@ import {
 } from '../controllers/users.controller';
 import { isAdmin } from '../middlewares/auth.middleware';
 
-const usersRouter = Router();
+const usersRouter: Router = Router();
 
 usersRouter.get('/', isAdmin, getAllUsers);
 usersRouter.get('/profile', getProfile);

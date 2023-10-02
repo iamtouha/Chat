@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { login, logout, register } from '../controllers/auth.controller';
 import { isAuthenticated } from '../middlewares/auth.middleware';
 
-const authRouter = Router();
+const authRouter: Router = Router();
 
 authRouter.post('/register', register);
 authRouter.post('/login', login);
