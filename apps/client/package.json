@@ -34,7 +34,7 @@
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.2",
     "zustand": "^4.4.1",
-    "@innomarkt/configs": "workspace:*"
+    "configs": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

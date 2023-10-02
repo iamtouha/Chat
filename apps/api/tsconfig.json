@@ -1,4 +1,4 @@
 {
-  "extends": "@innomarkt/configs/tsconfig/express.json",
+  "extends": "configs/tsconfig/express.json",
   "include": ["src"]
 }

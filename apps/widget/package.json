@@ -12,7 +12,7 @@
     "dayjs": "^1.11.9",
     "lit": "^2.7.6",
     "socket.io-client": "^4.7.2",
-    "@innomarkt/configs": "workspace:*"
+    "configs": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.2",

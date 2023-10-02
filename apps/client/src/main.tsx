@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-import '@innomarkt/configs/css/global.css';
+import 'configs/css/global.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 

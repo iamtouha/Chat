@@ -1,1 +1,1 @@
-module.exports = require('@innomarkt/configs/eslint/vite');
+module.exports = require('configs/eslint/vite');
