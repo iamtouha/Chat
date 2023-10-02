@@ -29,6 +29,10 @@ export const Login = () => {
   const navigate = useNavigate();
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const { mutate: login, isLoading } = useMutation(
@@ -50,8 +54,8 @@ export const Login = () => {
   );
 
   return (
-    <div className="container mx-auto p-2">
-      <div className="h-full grid place-items-center">
+    <div className="container mx-auto">
+      <div className="min-h-screen grid place-items-center">
         <Card className="w-[360px] mt-10">
           <CardHeader>
             <CardTitle>Log in to Innomarkt Chat</CardTitle>
