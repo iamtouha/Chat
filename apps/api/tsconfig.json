@@ -1,4 +1,7 @@
 {
   "extends": "configs/tsconfig/express.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "rootDir": "src"
+  }
 }

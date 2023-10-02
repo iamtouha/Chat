@@ -8,8 +8,6 @@ export const initializeSocket = (io: Server) => {
   io.of('/api/v1').on('connection', (socket) => {
     socket.on('user_connected', (id) => {
       socketIdMap.set(id, socket.id);
-      console.log('user_connected', id, socket.id);
-      console.log(socketIdMap);
     });
     socket.on('disconnect', () => {
       socketIdMap.forEach((value, key) => {
