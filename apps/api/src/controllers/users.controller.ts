@@ -43,6 +43,12 @@ export const makeAdmin = async (req: Request, res: Response) => {
 };
 
 export const getAllUsers = async (req: Request, res: Response) => {
+  if (req.user?.role !== 'ADMIN') {
+    return res.status(403).json({
+      status: 'error',
+      message: "you're not authrized to perform this action",
+    });
+  }
   const users = await getUsers({
     select: {
       id: true,

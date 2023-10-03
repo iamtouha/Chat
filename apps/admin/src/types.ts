@@ -4,6 +4,8 @@ export type User = {
   email: number;
   lastLogin: string;
   role: 'ADMIN' | 'USER';
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Conversation = {

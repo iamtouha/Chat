@@ -1,10 +1,11 @@
-import { Outlet, Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { User } from '@/types';
 import { useUserStore } from '@/store/userStore';
 import { toast } from 'react-toastify';
 import { Icons } from './icons';
+import { type ReactNode } from 'react';
 
 type ResponseType = {
   status: string;
@@ -12,7 +13,7 @@ type ResponseType = {
   message: string | undefined;
 };
 
-export const DefaultLayout = () => {
+export const AuthGuard = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -52,9 +53,5 @@ export const DefaultLayout = () => {
 
   if (!user) return <Navigate to={'/auth/login'} />;
 
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <>{children}</>;
 };
