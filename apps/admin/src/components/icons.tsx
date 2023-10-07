@@ -61,9 +61,11 @@ import {
   Paperclip,
   ImagePlus,
   ShieldCheck,
+  Clipboard,
 } from 'lucide-react';
 
 export const Icons = {
+  clipboard: Clipboard,
   sun: SunMedium,
   moon: Moon,
   star: Star,

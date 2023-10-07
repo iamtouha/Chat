@@ -2,7 +2,7 @@ export type User = {
   id: string;
   username: string;
   email: number;
-  lastLogin: string;
+  lastLogin?: string;
   role: 'ADMIN' | 'USER';
   createdAt: string;
   updatedAt: string;

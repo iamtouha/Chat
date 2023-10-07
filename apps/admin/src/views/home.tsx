@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ColumnDef, PaginationComponent, Table } from 'unstyled-table';
 import {
@@ -15,6 +15,7 @@ import { Icons } from '@/components/icons';
 import { Input } from '@/components/ui/input';
 import type { Client, ResponsePayload } from '@/types';
 import dayjs from 'dayjs';
+import { Button } from '@/components/ui/button';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -48,11 +49,13 @@ export const Home = () => {
         accessorKey: 'lastLogin',
         header: 'Last login',
         cell: ({ getValue }) =>
-          dayjs(getValue<string>()).format('DD/MM/YYYY hh:mm a'),
+          getValue<string | undefined>()
+            ? dayjs(getValue<string>()).format('DD/MM/YYYY hh:mm a')
+            : '-',
       },
       {
         accessorKey: 'createdAt',
-        header: 'Created at',
+        header: 'Added at',
         cell: ({ getValue }) =>
           dayjs(getValue<string>()).format('DD/MM/YYYY hh:mm a'),
       },
@@ -61,7 +64,13 @@ export const Home = () => {
   );
 
   return (
-    <main className="container mx-auto p-2">
+    <main className="container max-w-screen-xl mx-auto p-2">
+      <div className="flex justify-between py-2 my-6">
+        <h1 className="text-2xl">Clients</h1>
+        <Link to="/new-client">
+          <Button>Add New Client</Button>
+        </Link>
+      </div>
       <Table
         columns={columns}
         state={{ columnVisibility: { id: false } }}

@@ -68,15 +68,15 @@ export const register = async (req: Request, res: Response) => {
     const { email, password, username } = result.data;
     const existingUser = await getUser({
       where: { OR: [{ email }, { username }] },
-      select: { email: true },
+      select: { username: true },
     });
     if (existingUser) {
       return res.status(400).json({
         status: 'error',
         message:
-          existingUser.email === email
-            ? 'User with this email already exists.'
-            : 'Username is not available.',
+          existingUser.username === username
+            ? 'Username is not available.'
+            : 'User with this email already exists.',
       });
     }
     const salt = random();

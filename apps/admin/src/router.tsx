@@ -3,7 +3,8 @@ import { Home } from './views/home';
 import { MainLayout } from './components/layouts/main-layout';
 import { AuthLayout } from './components/layouts/auth-layout';
 import { Login } from './views/login';
-import Client from './views/client';
+import { ClientView } from './views/client';
+import { NewClient } from './views/new-client';
 
 export const router = createBrowserRouter(
   [
@@ -17,7 +18,11 @@ export const router = createBrowserRouter(
         },
         {
           path: '/client',
-          element: <Client />,
+          element: <ClientView />,
+        },
+        {
+          path: '/new-client',
+          element: <NewClient />,
         },
       ],
     },
