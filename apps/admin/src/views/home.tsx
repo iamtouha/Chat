@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { ColumnDef, PaginationComponent, Table } from 'unstyled-table';
-import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { ColumnDef, PaginationComponent, Table } from 'unstyled-table';
 import {
   Table as TableComponent,
   TableBody,
@@ -10,18 +11,20 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { ResponsePayload, User } from '@/types';
 import { Icons } from '@/components/icons';
 import { Input } from '@/components/ui/input';
+import type { Client, ResponsePayload } from '@/types';
+import dayjs from 'dayjs';
 
 export const Home = () => {
+  const navigate = useNavigate();
   const { data: users, isLoading } = useQuery(['users'], async () => {
-    const res = await axios.get<ResponsePayload<User[]>>('/api/v1/users');
+    const res = await axios.get<ResponsePayload<Client[]>>('/api/v1/users');
     if (res.data.status === 'error') throw new Error(res.data.message);
     return res.data.result;
   });
-  console.log(users);
-  const columns = useMemo<ColumnDef<User>[]>(
+
+  const columns = useMemo<ColumnDef<Client>[]>(
     () => [
       {
         header: '#',
@@ -34,8 +37,25 @@ export const Home = () => {
       { accessorKey: 'username', header: 'Username' },
       { accessorKey: 'email', header: 'Email' },
       { accessorKey: 'role', header: 'Role' },
-      { accessorKey: 'lastLogin', header: 'Last login' },
-      { accessorKey: 'createdAt', header: 'Created at' },
+      {
+        accessorKey: 'active',
+        header: () => <p className="text-center w-full"> Active</p>,
+        cell: ({ getValue }) => (
+          <p className="text-center"> {getValue<boolean>() ? 'Yes' : 'No'}</p>
+        ),
+      },
+      {
+        accessorKey: 'lastLogin',
+        header: 'Last login',
+        cell: ({ getValue }) =>
+          dayjs(getValue<string>()).format('DD/MM/YYYY hh:mm a'),
+      },
+      {
+        accessorKey: 'createdAt',
+        header: 'Created at',
+        cell: ({ getValue }) =>
+          dayjs(getValue<string>()).format('DD/MM/YYYY hh:mm a'),
+      },
     ],
     [],
   );
@@ -51,14 +71,11 @@ export const Home = () => {
           header: ({ children }) => <TableHeader>{children}</TableHeader>,
           headerCell: ({ children }) => <TableHead>{children}</TableHead>,
           headerRow: ({ children }) => <TableRow>{children}</TableRow>,
-          body: ({ children, rowModel }) => (
+          body: ({ children }) => (
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={rowModel.rows[0]?.getVisibleCells().length}
-                    align="center"
-                  >
+                  <TableCell colSpan={columns.length} align="center">
                     <Icons.spinner className="animate-spin w-8 h-8 m-4" />
                   </TableCell>
                 </TableRow>
@@ -68,7 +85,14 @@ export const Home = () => {
             </TableBody>
           ),
           bodyCell: TableCell,
-          bodyRow: TableRow,
+          bodyRow: ({ children, row }) => (
+            <TableRow
+              className="cursor-pointer"
+              onClick={() => navigate(`/client?id=${row.original.id}`)}
+            >
+              {children}
+            </TableRow>
+          ),
           filterInput: ({ props }) => <Input {...props} className="h-8 my-1" />,
           paginationBar: (props) => (
             <PaginationComponent

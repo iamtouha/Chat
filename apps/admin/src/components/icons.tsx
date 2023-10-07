@@ -60,6 +60,7 @@ import {
   AlignLeft,
   Paperclip,
   ImagePlus,
+  ShieldCheck,
 } from 'lucide-react';
 
 export const Icons = {
@@ -69,6 +70,7 @@ export const Icons = {
   twitter: Twitter,
   close: X,
   spinner: Loader2,
+  shieldCheck: ShieldCheck,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   chevronsLeft: ChevronsLeft,

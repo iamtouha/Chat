@@ -8,6 +8,10 @@ export type User = {
   updatedAt: string;
 };
 
+export type Client = User & {
+  active: boolean;
+};
+
 export type Conversation = {
   id: string;
   name: string;

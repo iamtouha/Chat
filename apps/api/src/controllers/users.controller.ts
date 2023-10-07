@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { getUser, getUsers, updateUser } from '../providers/users.provider';
+import { getUser, updateUser } from '../providers/users.provider';
 
 export const getProfile = async (req: Request, res: Response) => {
   if (!req.user)
@@ -26,7 +26,7 @@ export const getProfile = async (req: Request, res: Response) => {
   });
 };
 
-export const makeAdmin = async (req: Request, res: Response) => {
+export const makeInitialAdmin = async (req: Request, res: Response) => {
   if (!req.user) return;
   const existingAdmin = await getUser({ where: { role: 'ADMIN' } });
   if (existingAdmin) {
@@ -39,57 +39,5 @@ export const makeAdmin = async (req: Request, res: Response) => {
   return res.status(200).json({
     status: 'success',
     message: 'User is now an admin',
-  });
-};
-
-export const getAllUsers = async (req: Request, res: Response) => {
-  if (req.user?.role !== 'ADMIN') {
-    return res.status(403).json({
-      status: 'error',
-      message: "you're not authrized to perform this action",
-    });
-  }
-  const users = await getUsers({
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      role: true,
-      lastLogin: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-  return res.status(200).json({
-    status: 'success',
-    message: 'Users retrieved successfully',
-    result: users,
-  });
-};
-
-export const getUserFromId = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = await getUser({
-    where: { id },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      role: true,
-      lastLogin: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-  if (!user) {
-    return res.status(404).json({
-      status: 'error',
-      message: 'User not found',
-    });
-  }
-  return res.status(200).json({
-    status: 'success',
-    message: 'User retrieved successfully',
-    result: user,
   });
 };
