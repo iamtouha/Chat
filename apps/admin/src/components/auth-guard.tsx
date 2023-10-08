@@ -17,7 +17,7 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
-  const { isLoading } = useQuery(
+  const { isLoading, fetchStatus } = useQuery(
     ['profile'],
     async () => {
       const res = await axios.get<ResponseType>(
@@ -26,6 +26,7 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
       return res.data.result;
     },
     {
+      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         if (data?.role !== 'ADMIN') {
           toast.error('You are not authorized to access this page');
@@ -44,12 +45,13 @@ export const AuthGuard = ({ children }: { children: ReactNode }) => {
     },
   );
 
-  if (isLoading)
+  if (isLoading || fetchStatus === 'fetching') {
     return (
       <div className="h-screen grid place-items-center">
         <Icons.spinner className="animate-spin w-12 h-12" />
       </div>
     );
+  }
 
   if (!user) return <Navigate to={'/auth/login'} />;
 

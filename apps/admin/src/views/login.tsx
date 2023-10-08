@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PasswordInput } from '@/components/password-input';
 
 const loginFormSchema = z.object({
@@ -26,6 +26,7 @@ const loginFormSchema = z.object({
 type LoginForm = z.infer<typeof loginFormSchema>;
 
 export const Login = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
@@ -41,8 +42,9 @@ export const Login = () => {
     {
       onSuccess: (res) => {
         if (res.data.status === 'success') {
+          queryClient.invalidateQueries(['profile']);
           toast.success('Logged in successfully');
-          navigate('/');
+          navigate('/', { replace: true });
         }
       },
       onError: (err) => {

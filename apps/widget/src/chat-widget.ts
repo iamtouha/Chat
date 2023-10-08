@@ -204,9 +204,6 @@ export class ChatWidget extends LitElement {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    .chat-box::-webkit-scrollbar {
-      display: none;
-    }
     .chat-input {
       position: absolute;
       bottom: 0;
@@ -243,6 +240,15 @@ export class ChatWidget extends LitElement {
     }
     .hidden {
       display: none;
+    }
+    ::-webkit-scrollbar {
+      width: 14px;
+    }
+    ::-webkit-scrollbar-thumb {
+      border: 4px solid rgba(0, 0, 0, 0);
+      background-clip: padding-box;
+      border-radius: 9999px;
+      background-color: #aaaaaa;
     }
   `;
 }
