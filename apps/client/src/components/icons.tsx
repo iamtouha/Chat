@@ -60,9 +60,11 @@ import {
   AlignLeft,
   Paperclip,
   ImagePlus,
+  File as FileIcon,
 } from 'lucide-react';
 
 export const Icons = {
+  file: FileIcon,
   sun: SunMedium,
   moon: Moon,
   star: Star,

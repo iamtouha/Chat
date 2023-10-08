@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { timeDifference, useQueryparams, cn } from '@/lib/utils';
-import type { Conversation, FileInfo, Message, ResponsePayload } from '@/types';
+import type { Conversation, Message, ResponsePayload } from '@/types';
 import socket from '@/socket';
 import { toast } from 'react-toastify';
 import { FileCard } from '@/components/file-card';
@@ -34,8 +34,7 @@ export const ChatPage = () => {
 
   const [text, setText] = React.useState('');
   const [messages, setMessages] = React.useState<Message[]>([]);
-  const [fileInfo, setFileInfo] = React.useState<FileInfo | null>(null);
-  const [dataUrl, setDataUrl] = React.useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const messageBox = React.useRef<HTMLDivElement>(null);
 
@@ -50,18 +49,7 @@ export const ChatPage = () => {
     if (!fileExtension || !ALLOWED_EXTENSIONS.includes(fileExtension)) {
       return void toast.error('Invalid file type');
     }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setDataUrl(event.target?.result as string);
-    };
-
-    setFileInfo({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    });
-    reader.readAsDataURL(file);
-    fileInputRef.current?.value && (fileInputRef.current.value = '');
+    setSelectedFile(file);
   };
 
   const {
@@ -199,19 +187,19 @@ export const ChatPage = () => {
                 <Icons.imagePlus className="h-6 w-6" />
               </Button>
               <div className="flex flex-auto items-center gap-1">
-                {dataUrl ? (
+                {selectedFile ? (
                   <FileCard
-                    fileInfo={fileInfo!}
-                    dataurl={dataUrl}
+                    file={selectedFile}
                     onClose={() => {
-                      setDataUrl(null);
-                      setFileInfo(null);
+                      setSelectedFile(null);
+                      fileInputRef.current?.value &&
+                        (fileInputRef.current.value = '');
                     }}
                   />
                 ) : null}
 
                 <Input
-                  className={dataUrl ? 'hidden' : ''}
+                  className={selectedFile ? 'hidden' : ''}
                   placeholder="Write your text here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
