@@ -22,14 +22,47 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { timeDifference, useQueryparams, cn } from '@/lib/utils';
-import type { Conversation, Message, ResponsePayload } from '@/types';
+import type { Conversation, FileInfo, Message, ResponsePayload } from '@/types';
 import socket from '@/socket';
+import { toast } from 'react-toastify';
+import { FileCard } from '@/components/file-card';
+
+const ALLOWED_EXTENSIONS = ['png', 'jpeg', 'pdf', 'docx', 'csv', 'xlsm'];
 
 export const ChatPage = () => {
+  const params = useQueryparams();
+
   const [text, setText] = React.useState('');
   const [messages, setMessages] = React.useState<Message[]>([]);
+  const [fileInfo, setFileInfo] = React.useState<FileInfo | null>(null);
+  const [dataUrl, setDataUrl] = React.useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const messageBox = React.useRef<HTMLDivElement>(null);
-  const params = useQueryparams();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+    if (file.size > 1024 * 1024 * 2) {
+      return void toast.error('File size must be less than 2MB');
+    }
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    if (!fileExtension || !ALLOWED_EXTENSIONS.includes(fileExtension)) {
+      return void toast.error('Invalid file type');
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setDataUrl(event.target?.result as string);
+    };
+
+    setFileInfo({
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+    reader.readAsDataURL(file);
+    fileInputRef.current?.value && (fileInputRef.current.value = '');
+  };
 
   const {
     data: conversation,
@@ -58,6 +91,7 @@ export const ChatPage = () => {
   const { mutate: sendMessage } = useMutation(
     ['sendmessage', params.get('id'), text],
     async (content: string) => {
+      if (!content.length) return;
       const res = await axios.post<ResponsePayload<Message>>(
         `/api/v1/messages`,
         {
@@ -127,8 +161,8 @@ export const ChatPage = () => {
             <Icons.spinner className="animate-spin h-10 w-10 text-secondary" />
           </div>
         ) : conversation ? (
-          <Card className="relative h-full border-0 shadow-none">
-            <CardHeader className="mb-4 flex flex-row items-start space-y-0 border-b p-0 pb-2">
+          <Card className="relative h-full border-0 shadow-none grid gap-1 grid-rows-[56px,auto,56px]">
+            <CardHeader className="flex flex-row items-start space-y-0 border-b p-0">
               <div className="flex-auto">
                 <CardTitle className="text-lg">{conversation.name}</CardTitle>
                 <CardDescription className="text-xs">
@@ -146,7 +180,7 @@ export const ChatPage = () => {
             </CardHeader>
             <CardContent
               ref={messageBox}
-              className="space-y-2 overflow-y-auto px-0 absolute inset-x-0 inset-y-14"
+              className="space-y-2 overflow-y-auto px-0"
             >
               {messages.map((message) => (
                 <ConversationText
@@ -156,23 +190,40 @@ export const ChatPage = () => {
                 />
               ))}
             </CardContent>
-            <CardFooter className="absolute inset-x-0 bottom-0 gap-2 bg-background px-0 py-2">
-              <Button variant={'ghost'} className="h-10 w-10 p-2">
-                <Icons.attachment className="h-6 w-6" />
-              </Button>
-              <Button variant={'ghost'} className="h-10 w-10 p-2">
+            <CardFooter className="gap-2 bg-background px-0 py-2">
+              <Button
+                variant={'ghost'}
+                className="h-10 w-10 p-2"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <Icons.imagePlus className="h-6 w-6" />
               </Button>
               <div className="flex flex-auto items-center gap-1">
+                {dataUrl ? (
+                  <FileCard
+                    fileInfo={fileInfo!}
+                    dataurl={dataUrl}
+                    onClose={() => {
+                      setDataUrl(null);
+                      setFileInfo(null);
+                    }}
+                  />
+                ) : null}
+
                 <Input
+                  className={dataUrl ? 'hidden' : ''}
                   placeholder="Write your text here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                 />
-                <Button
-                  disabled={!text.length}
-                  onClick={() => sendMessage(text)}
-                >
+                <input
+                  className="hidden"
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".png, .jpeg, .pdf, .docx, .csv, .xlsm"
+                  onChange={handleFileChange}
+                />
+                <Button onClick={() => sendMessage(text)}>
                   <Icons.sendMessage className="h-6 w-6" />
                 </Button>
               </div>

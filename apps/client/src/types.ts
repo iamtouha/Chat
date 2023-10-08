@@ -25,6 +25,12 @@ export type Message = {
   conversationId?: string;
 };
 
+export type FileInfo = {
+  name: string;
+  size: number;
+  type: string;
+};
+
 export type ResponsePayload<T> =
   | {
       status: 'error';
