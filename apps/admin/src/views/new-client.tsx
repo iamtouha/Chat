@@ -30,7 +30,7 @@ type RegisterClientForm = z.infer<typeof registerClientSchema>;
 
 export const NewClient = () => {
   const navigate = useNavigate();
-  const form = useForm({
+  const form = useForm<RegisterClientForm>({
     resolver: zodResolver(registerClientSchema),
     defaultValues: { email: '', password: '', username: '' },
   });

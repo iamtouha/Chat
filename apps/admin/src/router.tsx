@@ -5,6 +5,7 @@ import { AuthLayout } from './components/layouts/auth-layout';
 import { Login } from './views/login';
 import { ClientView } from './views/client';
 import { NewClient } from './views/new-client';
+import { UpdateClient } from './views/update-client';
 
 export const router = createBrowserRouter(
   [
@@ -12,29 +13,16 @@ export const router = createBrowserRouter(
       path: '/',
       element: <MainLayout />,
       children: [
-        {
-          path: '/',
-          element: <Home />,
-        },
-        {
-          path: '/client',
-          element: <ClientView />,
-        },
-        {
-          path: '/new-client',
-          element: <NewClient />,
-        },
+        { path: '/', element: <Home /> },
+        { path: '/client', element: <ClientView /> },
+        { path: '/new-client', element: <NewClient /> },
+        { path: '/update-client', element: <UpdateClient /> },
       ],
     },
     {
       path: '/auth',
       element: <AuthLayout />,
-      children: [
-        {
-          path: 'login',
-          element: <Login />,
-        },
-      ],
+      children: [{ path: 'login', element: <Login /> }],
     },
   ],
   {

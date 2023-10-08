@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getProfile, makeInitialAdmin } from '../controllers/users.controller';
+import {
+  getProfile,
+  makeInitialAdmin,
+  updateUserData,
+} from '../controllers/users.controller';
 import {
   makeAdmin,
   removeAdmin,
@@ -15,6 +19,7 @@ const usersRouter: Router = Router();
 
 usersRouter.get('/profile', getProfile);
 usersRouter.post('/make-admin', makeInitialAdmin);
+usersRouter.put('/:id', updateUserData);
 
 /**
  * Admin routes
