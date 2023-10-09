@@ -17,6 +17,7 @@ model User {
   active      Boolean  @default(false)
   role        USER_ROLE @default(USER)
   conversations Conversation[]
+  files       File[]
   password    String   
   salt        String
   sessionToken String?
@@ -39,17 +40,34 @@ model Conversation {
   @@index([userId])
 }
  model Message {
-  id             String       @id @default(uuid())
+  id             Int          @id @default(autoincrement())
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
   content        String
   contentType    CONTENT_TYPE @default(TEXT)
   type           MESSAGE_TYPE
   seen           Boolean      @default(false)
+  file           File?
   createdAt      DateTime     @default(now())
 
   @@index([conversationId])
  }
+
+model File {
+  id             Int          @id @default(autoincrement())
+  key            String
+  name           String
+  location       String
+  mimeType       String
+  size           Int
+  clientId       String
+  client         User         @relation(fields: [clientId], references: [id])
+  messageId      Int?         @unique
+  message        Message?     @relation(fields: [messageId], references: [id])
+  createdAt      DateTime     @default(now())
+
+  @@index([clientId])
+}
 
 enum USER_ROLE {
   ADMIN
