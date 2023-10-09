@@ -296,10 +296,13 @@ export const ConversationText = ({
   sender?: boolean;
   local?: boolean;
 }) => {
-  const filename =
-    type === 'FILE'
-      ? content.split('/').pop()?.split('-').pop()?.replace('%20', ' ')
-      : '';
+  const getFilename = () => {
+    if (type !== 'FILE') return '';
+    const key = content.split('/').pop()?.split('-');
+    if (!key) return '';
+    key.shift();
+    return key.join('-').replace(/%20/g, ' ');
+  };
   return (
     <div className={cn('flex', sender ? 'justify-end text-right' : '')}>
       {
@@ -333,7 +336,7 @@ export const ConversationText = ({
               {local ? (
                 <span>you {sender ? 'sent' : 'received'} a file</span>
               ) : (
-                filename
+                getFilename()
               )}
 
               <a href={content}>
