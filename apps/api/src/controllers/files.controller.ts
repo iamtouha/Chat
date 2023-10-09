@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { newFileData } from '../providers/files.provider';
+import { aggregateFileData, newFileData } from '../providers/files.provider';
 
 type S3File = Express.Multer.File & { location: string; key: string };
 
@@ -31,5 +31,18 @@ export const uploadFile = async (req: Request, res: Response) => {
   return res.status(201).send({
     status: 'success',
     result: file,
+  });
+};
+
+export const countSize = async (req: Request, res: Response) => {
+  const { client } = req.query;
+  const data = await aggregateFileData({
+    where: { clientId: client as string },
+    _sum: { size: true },
+  });
+
+  return res.status(200).send({
+    status: 'success',
+    result: data._sum.size ?? 0,
   });
 };

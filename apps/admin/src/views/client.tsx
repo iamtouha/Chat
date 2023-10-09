@@ -36,6 +36,19 @@ export const ClientView = () => {
     },
   );
 
+  const { data: size } = useQuery(
+    ['storagesize', params.get('id')],
+    async () => {
+      const id = params.get('id');
+      if (!id) throw new Error('No client id provided');
+      const res = await axios.get<ResponsePayload<number>>(
+        '/api/v1/files/storage?client=' + id,
+      );
+      if (res.data.status === 'error') throw new Error(res.data.message);
+      return res.data.result;
+    },
+  );
+
   const { mutate: changeClientRole, isLoading: changeClientRoleLoading } =
     useMutation(
       ['change-role', client?.id, client?.role],
@@ -233,6 +246,14 @@ export const ClientView = () => {
               <Button variant={'outline'} onClick={copyApiKey}>
                 Copy API key
               </Button>
+            </div>
+            <div className="mt-4">
+              <h3 className="text-xl">
+                Storage Usage:{' '}
+                {size
+                  ? `${(size / (1024 * 1024)).toFixed(2)} MB`
+                  : 'loading...'}
+              </h3>
             </div>
           </div>
         </div>

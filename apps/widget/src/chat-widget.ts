@@ -2,9 +2,10 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import dayjs from 'dayjs';
 import socket from './socket';
-import type { Conversation, Message } from './types';
+import type { Conversation, FileData, Message, ResponsePayload } from './types';
 import './user-form';
 import './message-item';
+import { addImageIcon } from './icons';
 
 @customElement('chat-widget')
 export class ChatWidget extends LitElement {
@@ -14,6 +15,8 @@ export class ChatWidget extends LitElement {
   @state() private _conversationid = '';
   @state() private _conversationLoading = false;
   @state() private _messages: Message[] = [];
+  @state() private _selectedFile: File | null = null;
+  @state() private _isFileSelected = false;
 
   _serverUrl = import.meta.env.VITE_APP_SERVER_URL as string;
 
@@ -32,17 +35,49 @@ export class ChatWidget extends LitElement {
             <message-item
               ?sender="${message.type === 'OUTBOUND'}"
               content="${message.content}"
+              contentType="${message.contentType}"
+              ?local="${message.local}"
               time="${dayjs(message.createdAt).format('hh:mm')}"
             ></message-item>
           `,
         )}
       </div>
       <div class="chat-input ${this._conversationid ? '' : 'hidden'}">
+        <input
+          type="file"
+          id="fileInput"
+          accept=".png, .jpeg, .pdf, .docx, .csv, .xlsm"
+          class="hidden"
+          @change="${this._handleFileSelect}"
+        />
+        <button class="attach-btn" @click=${this._openFileInput}>
+          ${addImageIcon}
+        </button>
         <input type="text" id="messageBox" placeholder="Type your message..." />
-        <button @click="${this._writeMessage}">Send</button>
+        <button class="send-btn" @click="${this._writeMessage}">Send</button>
       </div>
     </div>`;
   }
+
+  _openFileInput = () => {
+    const fileInput = this.shadowRoot?.getElementById(
+      'fileInput',
+    ) as HTMLInputElement;
+    if (!fileInput) return;
+    fileInput.click();
+  };
+
+  _handleFileSelect = () => {
+    const fileInput = this.shadowRoot?.getElementById(
+      'fileInput',
+    ) as HTMLInputElement;
+    if (!fileInput) return;
+    const file = fileInput.files?.[0];
+    if (!file || file.size > 1024 * 1024 * 2) return;
+    this._selectedFile = file;
+    console.log(file);
+    fileInput.value = '';
+  };
 
   requestUpdate(name?: PropertyKey, oldValue?: unknown) {
     super.requestUpdate(name, oldValue);
@@ -51,6 +86,11 @@ export class ChatWidget extends LitElement {
       socket.emit('user_connected', this._conversationid);
       socket.on('message_received', (message: Message) => {
         this._messages = [...this._messages, message];
+      });
+      socket.on('message_updated', (message: Message, localId: string) => {
+        this._messages = this._messages.map((msg) =>
+          msg.id === localId ? message : msg,
+        );
       });
     }
     if (name === '_messages') {
@@ -73,44 +113,89 @@ export class ChatWidget extends LitElement {
     });
   }
 
+  _uploadFile = async () => {
+    const formData = new FormData();
+    formData.append('file', this._selectedFile as Blob);
+    formData.append('client', this.clientid);
+    const response = await fetch(`${this._serverUrl}/api/v1/files/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!response.ok) return;
+    const data = (await response.json()) as ResponsePayload<FileData>;
+    if (data?.status !== 'success') return;
+    return data.result;
+  };
+
   _writeMessage = async () => {
     const messageInput = this.shadowRoot?.getElementById(
       'messageBox',
     ) as HTMLInputElement;
-    if (!this._conversationid || !messageInput.value.length) return;
+    if (!this._conversationid) {
+      console.error('No conversation id');
+      return;
+    }
+    if (!messageInput.value && !this._selectedFile) {
+      console.error('No message to send');
+      return;
+    }
+
+    const contentType = this._selectedFile?.type.startsWith('image/')
+      ? 'IMAGE'
+      : this._selectedFile
+      ? 'FILE'
+      : 'TEXT';
+    const url = this._selectedFile
+      ? URL.createObjectURL(this._selectedFile)
+      : null;
+
+    const localId = Date.now().toString();
     const newMessage: Message = {
-      id: Date.now().toString(),
-      content: messageInput.value,
+      id: localId,
+      content: url ?? messageInput.value,
       type: 'OUTBOUND',
-      contentType: 'TEXT',
+      contentType: contentType,
       seen: false,
+      local: true,
       createdAt: new Date().toJSON(),
       conversationId: this._conversationid,
     };
     this._messages = [...this._messages, newMessage];
     messageInput.value = '';
     socket.emit('message_sent', newMessage, this.clientid);
-    console.log(this._conversationid);
+
+    const filedata = this._selectedFile ? await this._uploadFile() : null;
+    this._selectedFile = null;
+    this._isFileSelected = false;
+
     const response = await fetch(`${this._serverUrl}/api/v1/messages`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        content: newMessage.content,
+        content: filedata?.location ?? newMessage.content,
         type: newMessage.type,
         conversationId: newMessage.conversationId,
+        contentType: newMessage.contentType,
+        fileId: filedata?.id,
       }),
     });
     if (!response.ok) {
       this._messages = this._messages.filter(
         (message) => message.id !== newMessage.id,
       );
-
       return;
     }
-    const data = await response.json();
+    const data = (await response.json()) as ResponsePayload<Message>;
     if (data?.status !== 'success') {
+      this._messages = this._messages.filter(
+        (message) => message.id !== newMessage.id,
+      );
       return;
     }
+    this._messages = this._messages.map((message) =>
+      message.id === localId ? data.result : message,
+    );
+    socket.emit('message_update_sent', data.result, this.clientid, localId);
   };
 
   _createConversation = async (info: { name: string; email: string }) => {
@@ -165,7 +250,7 @@ export class ChatWidget extends LitElement {
       position: fixed;
       right: 20px;
       bottom: 0px;
-      width: 300px;
+      width: 330px;
       height: 400px;
       overflow: hidden;
       transform: translateY(360px);
@@ -222,7 +307,7 @@ export class ChatWidget extends LitElement {
       color: #222;
     }
 
-    .chat-input button {
+    .send-btn {
       background-color: #2c2c2c;
       color: #fff;
       border: none;
@@ -231,10 +316,20 @@ export class ChatWidget extends LitElement {
       margin-left: 5px;
       cursor: pointer;
     }
-
-    .chat-input button:hover {
-      background-color: #0056b3;
+    .attach-btn {
+      color: #2c2c2c;
+      background-color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      margin-right: 5px;
+      cursor: pointer;
     }
+    .attach-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
     .hidden {
       display: none;
     }

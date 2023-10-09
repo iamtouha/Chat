@@ -5,13 +5,19 @@ export const messagesSocket = (
   socketIdMap: Map<string, string>,
 ) => {
   socket.on('message_sent', (payload, receiverId: string) => {
-    console.log('message_sent to, ', receiverId);
     const clientSocketId = socketIdMap.get(receiverId);
 
-    if (!clientSocketId) {
-      console.log('clientSocketId not found', receiverId, socketIdMap);
-      return;
-    }
+    if (!clientSocketId) return;
+
     socket.to(clientSocketId).emit('message_received', payload);
   });
+
+  socket.on(
+    'message_update_sent',
+    (payload, receiverId: string, key: string) => {
+      const clientSocketId = socketIdMap.get(receiverId);
+      if (!clientSocketId) return;
+      socket.to(clientSocketId).emit('message_updated', payload, key);
+    },
+  );
 };

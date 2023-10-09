@@ -16,8 +16,19 @@ export type Message = {
   contentType: 'TEXT' | 'IMAGE' | 'FILE' | 'VIDEO' | 'AUDIO';
   seen: boolean;
   conversationId?: string;
+  local?: boolean;
 };
-
+export type FileData = {
+  id: number;
+  key: string;
+  name: string;
+  location: string;
+  mimeType: string;
+  size: number;
+  clientId: string;
+  messageId: number | null;
+  createdAt: Date;
+};
 export type ResponsePayload<T> =
   | {
       status: 'error';

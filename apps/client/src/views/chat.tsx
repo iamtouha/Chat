@@ -110,7 +110,7 @@ export const ChatPage = () => {
         {
           conversationId: params.get('id'),
           content: contentUrl ?? content,
-          fileId,
+          fileId: fileId ?? undefined,
           contentType,
           type: 'INBOUND',
         },
@@ -150,7 +150,7 @@ export const ChatPage = () => {
         setText('');
       },
       onSuccess: (data, { key }) => {
-        socket.emit('message_updated', data, conversation?.id, key);
+        socket.emit('message_update_sent', data, conversation?.id, key);
         setMessages((prev) =>
           prev.map((message) => (message.id === key ? data : message)),
         );
@@ -166,9 +166,15 @@ export const ChatPage = () => {
       if (message.conversationId !== conversation?.id) return;
       setMessages((prev) => [...prev, message]);
     };
+    const onMessageUpdated = (message: Message, key: string) => {
+      if (message.conversationId !== conversation?.id) return;
+      setMessages((prev) => prev.map((m) => (m.id === key ? message : m)));
+    };
     socket.on('message_received', onMessageReceived);
+    socket.on('message_updated', onMessageUpdated);
     return () => {
       socket.off('message_received', onMessageReceived);
+      socket.off('message_updated', onMessageUpdated);
     };
   }, [conversation?.id]);
 
@@ -224,6 +230,7 @@ export const ChatPage = () => {
                   type={message.contentType}
                   content={message.content}
                   local={message.local}
+                  time={message.createdAt}
                 />
               ))}
             </CardContent>
@@ -290,11 +297,13 @@ export const ConversationText = ({
   type,
   sender,
   local,
+  time,
 }: {
   content: string;
   type: Message['contentType'];
   sender?: boolean;
   local?: boolean;
+  time: string;
 }) => {
   const getFilename = () => {
     if (type !== 'FILE') return '';
@@ -304,7 +313,12 @@ export const ConversationText = ({
     return key.join('-').replace(/%20/g, ' ');
   };
   return (
-    <div className={cn('flex', sender ? 'justify-end text-right' : '')}>
+    <div
+      className={cn(
+        'flex items-end gap-1',
+        sender ? 'flex-row-reverse text-right' : '',
+      )}
+    >
       {
         {
           TEXT: (
@@ -317,10 +331,19 @@ export const ConversationText = ({
               {content}
             </p>
           ),
-          IMAGE: (
+          IMAGE: local ? (
+            <p
+              className={cn(
+                'conversation-text flex items-center h-11 w-max max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
+                sender ? 'bg-accent text-accent-foreground' : 'border',
+              )}
+            >
+              <span>you {sender ? 'sent' : 'received'} an image</span>
+            </p>
+          ) : (
             <img
               className={cn(
-                'conversation-text w-max  max-w-[max(30vw,300px)] max-h-[300px] object-contain rounded-lg px-3 py-1',
+                'w-max max-w-[max(30vw,300px)] max-h-[300px] h-full object-contain border rounded-lg',
               )}
               src={content}
             />
@@ -352,6 +375,9 @@ export const ConversationText = ({
           VIDEO: '',
         }[type]
       }
+      <p className="text-xs mb-1 text-muted-foreground">
+        {dayjs(time).format('hh:mm a')}
+      </p>
     </div>
   );
 };
