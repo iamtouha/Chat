@@ -23,6 +23,7 @@ export const getProfile = async (req: Request, res: Response) => {
       username: req.user.username,
       email: req.user.email,
       lastLogin: req.user.lastLogin,
+      active: req.user.active,
       role: req.query.admin === 'true' ? req.user.role : undefined,
     },
   });
