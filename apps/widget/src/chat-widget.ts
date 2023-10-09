@@ -139,11 +139,8 @@ export class ChatWidget extends LitElement {
     const response = await fetch(
       `${this._serverUrl}/api/v1/conversations/${this._conversationid}`,
     );
+
     if (!response.ok) {
-      this._conversationLoading = false;
-      return;
-    }
-    if (response.status === 404) {
       this._conversationid = '';
       localStorage.removeItem('conversationid');
       return;
