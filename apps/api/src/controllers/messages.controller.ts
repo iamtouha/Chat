@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { newMessage, getMessages } from '../providers/messages.provider';
 import { messageInputSchema } from '../validators/message.validator';
 import { parseZodError } from '../lib/helpers';
-import { CONTENT_TYPE } from '@prisma/client';
 
 export const createMessage = async (req: Request, res: Response) => {
   try {
@@ -13,8 +12,9 @@ export const createMessage = async (req: Request, res: Response) => {
         errors: parseZodError(result.error),
         message: 'Invalid message data',
       });
+    const { fileId, ...data } = result.data;
     const message = await newMessage({
-      data: { ...result.data, contentType: CONTENT_TYPE.TEXT },
+      data: { ...data, file: fileId ? { connect: { id: fileId } } : undefined },
     });
     return res.status(201).json({
       status: 'success',

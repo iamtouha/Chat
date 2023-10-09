@@ -22,16 +22,17 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { timeDifference, useQueryparams, cn } from '@/lib/utils';
-import type { Conversation, Message, ResponsePayload } from '@/types';
+import type { Conversation, FileData, Message, ResponsePayload } from '@/types';
 import socket from '@/socket';
 import { toast } from 'react-toastify';
 import { FileCard } from '@/components/file-card';
+import { useUserStore } from '@/store/userStore';
 
 const ALLOWED_EXTENSIONS = ['png', 'jpeg', 'pdf', 'docx', 'csv', 'xlsm'];
 
 export const ChatPage = () => {
   const params = useQueryparams();
-
+  const user = useUserStore((state) => state.user);
   const [text, setText] = React.useState('');
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
@@ -52,11 +53,7 @@ export const ChatPage = () => {
     setSelectedFile(file);
   };
 
-  const {
-    data: conversation,
-    isLoading,
-    refetch,
-  } = useQuery(
+  const { data: conversation, isLoading } = useQuery(
     ['conversation', params.get('id')],
     async () => {
       const res = await axios.get<
@@ -78,13 +75,43 @@ export const ChatPage = () => {
 
   const { mutate: sendMessage } = useMutation(
     ['sendmessage', params.get('id'), text],
-    async (content: string) => {
-      if (!content.length) return;
+    async ({
+      content,
+      file,
+    }: {
+      content: string;
+      file: File | null;
+      key: string;
+    }) => {
+      let fileId: number | null = null;
+      let contentUrl: string | null = null;
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('client', user?.id ?? '');
+        const res = await axios.post<ResponsePayload<FileData>>(
+          `/api/v1/files/upload`,
+          formData,
+        );
+        if (res.data.status !== 'success') {
+          throw new Error(res.data.message);
+        }
+
+        fileId = res.data.result.id;
+        contentUrl = res.data.result.location;
+      }
+      const contentType = file?.type.startsWith('image/')
+        ? 'IMAGE'
+        : file
+        ? 'FILE'
+        : 'TEXT';
       const res = await axios.post<ResponsePayload<Message>>(
         `/api/v1/messages`,
         {
           conversationId: params.get('id'),
-          content,
+          content: contentUrl ?? content,
+          fileId,
+          contentType,
           type: 'INBOUND',
         },
       );
@@ -94,13 +121,27 @@ export const ChatPage = () => {
       return res.data.result;
     },
     {
-      onMutate: (content) => {
+      onMutate: (payload) => {
+        if (payload.file) {
+          setSelectedFile(null);
+          fileInputRef.current?.value && (fileInputRef.current.value = '');
+        }
+        const content = payload.file?.type.startsWith('image/')
+          ? URL.createObjectURL(payload.file)
+          : payload.file?.name ?? payload.content;
+
+        const contentType = payload.file?.type.startsWith('image/')
+          ? 'IMAGE'
+          : payload.file
+          ? 'FILE'
+          : 'TEXT';
         const message: Message = {
-          id: Date.now().toString(),
+          id: payload.key,
+          local: true,
           content,
           type: 'INBOUND',
           createdAt: new Date().toISOString(),
-          contentType: 'TEXT',
+          contentType,
           seen: false,
           conversationId: conversation?.id ?? '',
         };
@@ -108,8 +149,14 @@ export const ChatPage = () => {
         setMessages((prev) => [...prev, message]);
         setText('');
       },
+      onSuccess: (data, { key }) => {
+        socket.emit('message_updated', data, conversation?.id, key);
+        setMessages((prev) =>
+          prev.map((message) => (message.id === key ? data : message)),
+        );
+      },
       onError: () => {
-        refetch();
+        setMessages((prev) => prev.slice(0, -1));
       },
     },
   );
@@ -174,7 +221,9 @@ export const ChatPage = () => {
                 <ConversationText
                   key={message.id}
                   sender={message.type === 'INBOUND'}
-                  text={message.content}
+                  type={message.contentType}
+                  content={message.content}
+                  local={message.local}
                 />
               ))}
             </CardContent>
@@ -211,7 +260,15 @@ export const ChatPage = () => {
                   accept=".png, .jpeg, .pdf, .docx, .csv, .xlsm"
                   onChange={handleFileChange}
                 />
-                <Button onClick={() => sendMessage(text)}>
+                <Button
+                  onClick={() =>
+                    sendMessage({
+                      content: text,
+                      file: selectedFile,
+                      key: Date.now().toString(),
+                    })
+                  }
+                >
                   <Icons.sendMessage className="h-6 w-6" />
                 </Button>
               </div>
@@ -229,22 +286,69 @@ export const ChatPage = () => {
 };
 
 export const ConversationText = ({
-  text,
+  content,
+  type,
   sender,
+  local,
 }: {
-  text: string;
+  content: string;
+  type: Message['contentType'];
   sender?: boolean;
+  local?: boolean;
 }) => {
+  const filename =
+    type === 'FILE'
+      ? content.split('/').pop()?.split('-').pop()?.replace('%20', ' ')
+      : '';
   return (
     <div className={cn('flex', sender ? 'justify-end text-right' : '')}>
-      <p
-        className={cn(
-          'conversation-text w-max  max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
-          sender ? 'bg-accent text-accent-foreground' : 'border',
-        )}
-      >
-        {text}
-      </p>
+      {
+        {
+          TEXT: (
+            <p
+              className={cn(
+                'conversation-text w-max  max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
+                sender ? 'bg-accent text-accent-foreground' : 'border',
+              )}
+            >
+              {content}
+            </p>
+          ),
+          IMAGE: (
+            <img
+              className={cn(
+                'conversation-text w-max  max-w-[max(30vw,300px)] max-h-[300px] object-contain rounded-lg px-3 py-1',
+              )}
+              src={content}
+            />
+          ),
+          FILE: (
+            <p
+              className={cn(
+                'conversation-text flex items-center h-11 w-max max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
+                sender ? 'bg-accent text-accent-foreground' : 'border',
+              )}
+            >
+              <Icons.file className="h-6 w-6 inline-block mr-2" />
+              {local ? (
+                <span>you {sender ? 'sent' : 'received'} a file</span>
+              ) : (
+                filename
+              )}
+
+              <a href={content}>
+                {local ? null : (
+                  <Button variant={'ghost'} size={'sm'} className="py-0">
+                    <Icons.downlaod className="h-5 w-5" />
+                  </Button>
+                )}
+              </a>
+            </p>
+          ),
+          AUDIO: '',
+          VIDEO: '',
+        }[type]
+      }
     </div>
   );
 };
