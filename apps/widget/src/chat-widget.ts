@@ -16,7 +16,6 @@ export class ChatWidget extends LitElement {
   @state() private _conversationLoading = false;
   @state() private _messages: Message[] = [];
   @state() private _selectedFile: File | null = null;
-  @state() private _isFileSelected = false;
 
   _serverUrl = import.meta.env.VITE_APP_SERVER_URL as string;
 
@@ -166,7 +165,6 @@ export class ChatWidget extends LitElement {
 
     const filedata = this._selectedFile ? await this._uploadFile() : null;
     this._selectedFile = null;
-    this._isFileSelected = false;
 
     const response = await fetch(`${this._serverUrl}/api/v1/messages`, {
       method: 'POST',

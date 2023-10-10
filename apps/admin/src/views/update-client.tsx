@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import axios, { AxiosError } from 'axios';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useQueryparams } from '@/lib/utils';
 import { nanoid } from 'nanoid';
 import { toast } from 'react-toastify';
