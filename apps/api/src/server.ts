@@ -1,5 +1,5 @@
 import http from 'http';
-import express from 'express';
+import express, { type Express } from 'express';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -8,7 +8,7 @@ import { json, urlencoded } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import router from './router';
 
-export const createApp = () => {
+export const createApp: () => Express = () => {
   const app = express();
   app
     .disable('x-powered-by')
@@ -19,7 +19,9 @@ export const createApp = () => {
     .use(cookieParser())
     .use(morgan('dev'))
     .use('/api', router)
-    .use(express.static('../client/dist'));
+    .use('/app', express.static('../client/dist'))
+    .use('/admin', express.static('../admin/dist'))
+    .use('/', (req, res) => res.redirect('/app'));
 
   return app;
 };
