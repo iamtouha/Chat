@@ -10,3 +10,14 @@
     background-color: #ffffff;
   }
 }
+.scroller {
+  overflow: auto;
+  height: 100px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.scroller .scroller-content .item {
+  height: 20px;
+  transform: translateZ(0);
+}
