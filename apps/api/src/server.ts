@@ -10,7 +10,6 @@ import router from './router';
 
 export const createApp: () => Express = () => {
   const app = express();
-  console.log(__dirname);
   app
     .disable('x-powered-by')
     .use(urlencoded({ extended: true }))
@@ -19,7 +18,7 @@ export const createApp: () => Express = () => {
     .use(cors())
     .use(cookieParser())
     .use(morgan('dev'))
-    .use('/', express.static('./static'))
+    .use('/', express.static('../client/dist'))
     .use('/api', router);
   return app;
 };
