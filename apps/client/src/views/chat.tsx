@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   Card,
@@ -164,7 +164,7 @@ export const ChatPage = () => {
   React.useEffect(() => {
     const onMessageReceived = (message: Message) => {
       if (message.conversationId !== conversation?.id) return;
-      setMessages((prev) => [...prev, message]);
+      setMessages((prev) => [message, ...prev]);
     };
     const onMessageUpdated = (message: Message, key: string) => {
       if (message.conversationId !== conversation?.id) return;
@@ -221,7 +221,7 @@ export const ChatPage = () => {
             </CardHeader>
             <CardContent
               ref={messageBox}
-              className="space-y-2 overflow-y-auto px-0"
+              className="space-y-2 overflow-y-auto px-0 flex flex-col-reverse"
             >
               {messages.map((message) => (
                 <ConversationText
@@ -318,6 +318,7 @@ export const ConversationText = ({
         'flex items-end gap-1',
         sender ? 'flex-row-reverse text-right' : '',
       )}
+      style={{ transform: 'translateZ(0)' }}
     >
       {
         {

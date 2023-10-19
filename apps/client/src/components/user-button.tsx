@@ -11,7 +11,7 @@ import { Button } from './ui/button';
 import { useUserStore } from '@/store/userStore';
 import { Link, Navigate } from 'react-router-dom';
 import { Icons } from './icons';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 
 export const UserButton = () => {

@@ -60,11 +60,15 @@ import {
   AlignLeft,
   Paperclip,
   ImagePlus,
+  Clipboard,
   File as FileIcon,
+  ShieldCheck,
 } from 'lucide-react';
 
 export const Icons = {
+  shieldCheck: ShieldCheck,
   file: FileIcon,
+  clipboard: Clipboard,
   sun: SunMedium,
   moon: Moon,
   star: Star,

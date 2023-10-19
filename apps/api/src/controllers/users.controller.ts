@@ -9,12 +9,7 @@ export const getProfile = async (req: Request, res: Response) => {
       status: 'error',
       message: 'Unauthorized',
     });
-  if (req.query.admin === 'true' && req.user.role !== 'ADMIN') {
-    return res.status(403).json({
-      status: 'error',
-      message: "you're not authrized to perform this action",
-    });
-  }
+
   return res.status(200).json({
     status: 'success',
     message: 'User profile retrieved successfully',
@@ -24,7 +19,7 @@ export const getProfile = async (req: Request, res: Response) => {
       email: req.user.email,
       lastLogin: req.user.lastLogin,
       active: req.user.active,
-      role: req.query.admin === 'true' ? req.user.role : undefined,
+      role: req.user.role,
     },
   });
 };

@@ -1,9 +1,12 @@
 export type User = {
   id: string;
   username: string;
-  email: number;
-  lastLogin: string;
+  email: string;
+  lastLogin?: string;
   active: boolean;
+  role: 'ADMIN' | 'USER';
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Conversation = {

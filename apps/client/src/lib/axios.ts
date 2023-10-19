@@ -1,7 +1,3 @@
-import { Axios } from 'axios';
+import axios from 'axios';
 
-export const axios = new Axios({
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+export default axios;

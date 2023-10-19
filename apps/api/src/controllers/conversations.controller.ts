@@ -72,7 +72,7 @@ export const fetchConversation = async (req: Request, res: Response) => {
           contentType: true,
           createdAt: true,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { createdAt: 'desc' },
       },
     },
   });
