@@ -43,9 +43,6 @@ export const ChatPage = () => {
     const file = e.target.files?.[0];
 
     if (!file) return;
-    if (file.size > 1024 * 1024 * 2) {
-      return void toast.error('File size must be less than 2MB');
-    }
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     if (!fileExtension || !ALLOWED_EXTENSIONS.includes(fileExtension)) {
       return void toast.error('Invalid file type');
