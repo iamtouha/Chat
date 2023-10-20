@@ -1,4 +1,5 @@
 import http from 'http';
+import path from 'path';
 import express, { type Express } from 'express';
 import { Server } from 'socket.io';
 import cors from 'cors';
@@ -9,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import router from './router';
 
 export const createApp: () => Express = () => {
+  console.log(__dirname);
   const app = express();
   app
     .disable('x-powered-by')
@@ -18,7 +20,7 @@ export const createApp: () => Express = () => {
     .use(cors())
     .use(cookieParser())
     .use(morgan('dev'))
-    .use('/', express.static('../client/dist'))
+    .use('/', express.static(path.join(__dirname, '../..', 'client', 'dist')))
     .use('/api', router);
   return app;
 };

@@ -28,6 +28,9 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+#pm2 config file
+ecosystem.config.js
+
 # turbo
 .turbo
 
