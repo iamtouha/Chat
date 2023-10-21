@@ -9,7 +9,7 @@ import {
   updateUser,
 } from '../providers/users.provider.js';
 import { parseZodError, getExceptionType } from '../lib/helpers.js';
-import { auth } from '@/lib/lucia.js';
+import { auth } from '../lib/lucia.js';
 
 const COOKIE_NAME = 'AUTH_TOKEN';
 

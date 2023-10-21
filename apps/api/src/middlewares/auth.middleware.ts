@@ -6,17 +6,17 @@ export const isAuthenticated = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const sessionToken = req.cookies['AUTH_TOKEN'];
+  // const sessionToken = req.cookies['AUTH_TOKEN'];
 
-  if (!sessionToken) {
-    return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-  }
-  const user = await getUser({ where: { sessionToken } });
+  // if (!sessionToken) {
+  //   return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+  // }
+  // const user = await getUser({ where: { sessionToken } });
 
-  if (!user) {
-    return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-  }
-  req.user = user;
+  // if (!user) {
+  //   return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+  // }
+  // req.user = user;
   next();
 };
 

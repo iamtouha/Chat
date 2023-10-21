@@ -1,7 +1,7 @@
 import { lucia } from 'lucia';
 import { express } from 'lucia/middleware';
 import { prisma as prismaAdapter } from '@lucia-auth/adapter-prisma';
-import { prisma } from '@/database.js';
+import { prisma } from '../database.js';
 
 export const auth = lucia({
   adapter: prismaAdapter(prisma),

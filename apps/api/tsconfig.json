@@ -15,11 +15,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src", "src/app.d.ts"]
 }
