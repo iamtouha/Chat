@@ -7,8 +7,6 @@ import { initializeSocket } from './sockets';
 
 const port = parseInt(process.env.PORT ?? '') || 3000;
 
-console.log(process.env.COOKIE_DOMAIN);
-
 server.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);
 });
