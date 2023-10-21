@@ -6,8 +6,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_URL")
-  relationMode = "prisma"
 }
 
 model User {
@@ -36,8 +34,6 @@ model Conversation {
   messages   Message[]
   createdAt  DateTime @default(now())
   lastActive DateTime @default(now())
-
-  @@index([userId])
 }
  model Message {
   id             Int          @id @default(autoincrement())
@@ -49,8 +45,7 @@ model Conversation {
   seen           Boolean      @default(false)
   file           File?
   createdAt      DateTime     @default(now())
-
-  @@index([conversationId])
+ 
  }
 
 model File {
@@ -65,8 +60,6 @@ model File {
   messageId      Int?         @unique
   message        Message?     @relation(fields: [messageId], references: [id])
   createdAt      DateTime     @default(now())
-
-  @@index([clientId])
 }
 
 enum USER_ROLE {
