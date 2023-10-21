@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser';
 import router from './router';
 
 export const createApp: () => Express = () => {
-  console.log(__dirname);
   const app = express();
   app
     .disable('x-powered-by')

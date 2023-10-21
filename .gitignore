@@ -31,6 +31,9 @@ yarn-error.log*
 #pm2 config file
 ecosystem.config.js
 
+#production deployment script
+deploy.sh
+
 # turbo
 .turbo
 
