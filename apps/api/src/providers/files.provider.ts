@@ -1,4 +1,4 @@
-import { prisma } from '../database';
+import { prisma } from '../database.js';
 
 export const newFileData = prisma.file.create;
 export const getFileData = prisma.file.findUnique;

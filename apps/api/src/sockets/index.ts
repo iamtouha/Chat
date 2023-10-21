@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
-import { conversationsSocket } from './conversations.socket';
-import { messagesSocket } from './messages.socket';
+import { conversationsSocket } from './conversations.socket.js';
+import { messagesSocket } from './messages.socket.js';
 
 const socketIdMap = new Map<string, string>();
 

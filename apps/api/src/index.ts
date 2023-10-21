@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { User } from '@prisma/client';
-import { server, io } from './server';
-import { initializeSocket } from './sockets';
+import { type User } from '@prisma/client';
+import { server, io } from './server.js';
+import { initializeSocket } from './sockets/index.js';
 
 const port = parseInt(process.env.PORT ?? '') || 3000;
 

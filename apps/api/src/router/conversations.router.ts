@@ -3,8 +3,8 @@ import {
   createConversation,
   fetchConversation,
   fetchConversations,
-} from '../controllers/conversations.controller';
-import { isAuthenticated } from '../middlewares/auth.middleware';
+} from '../controllers/conversations.controller.js';
+import { isAuthenticated } from '../middlewares/auth.middleware.js';
 
 const conversationRouter: Router = Router();
 

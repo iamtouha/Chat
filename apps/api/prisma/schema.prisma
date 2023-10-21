@@ -12,16 +12,20 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   username    String   @unique
+  password    String
   active      Boolean  @default(false)
   role        USER_ROLE @default(USER)
   conversations Conversation[]
   files       File[]
-  password    String   
-  salt        String
-  sessionToken String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   lastLogin  DateTime?
+}
+
+model RevokedToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
 }
 
 model Conversation {
@@ -45,7 +49,6 @@ model Conversation {
   seen           Boolean      @default(false)
   file           File?
   createdAt      DateTime     @default(now())
- 
  }
 
 model File {

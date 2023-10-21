@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
 import {
   getConversation,
   newConversation,
   getConversations,
-} from '../providers/conversations.provider';
-import { createConversationSchema } from '../validators/conversation.validator';
-import { parseZodError } from '../lib/helpers';
+} from '../providers/conversations.provider.js';
+import { createConversationSchema } from '../validators/conversation.validator.js';
+import { parseZodError } from '../lib/helpers.js';
+import type { Request, Response } from 'express';
 
 export const createConversation = async (req: Request, res: Response) => {
   const result = createConversationSchema.safeParse(req.body);

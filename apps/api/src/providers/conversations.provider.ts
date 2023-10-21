@@ -1,4 +1,4 @@
-import { prisma } from '../database';
+import { prisma } from '../database.js';
 
 export const newConversation = prisma.conversation.create;
 export const getConversation = prisma.conversation.findUnique;

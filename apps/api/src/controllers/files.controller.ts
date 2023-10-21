@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { aggregateFileData, newFileData } from '../providers/files.provider';
+import { aggregateFileData, newFileData } from '../providers/files.provider.js';
+import type { Request, Response } from 'express';
 
 type S3File = Express.Multer.File & { location: string; key: string };
 

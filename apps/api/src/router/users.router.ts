@@ -3,7 +3,7 @@ import {
   getProfile,
   makeInitialAdmin,
   updateUserData,
-} from '../controllers/users.controller';
+} from '../controllers/users.controller.js';
 import {
   makeAdmin,
   removeAdmin,
@@ -12,8 +12,8 @@ import {
   getAllUsers,
   getUserFromId,
   removeUser,
-} from '../controllers/users.admin.controller';
-import { isAdmin } from '../middlewares/auth.middleware';
+} from '../controllers/users.admin.controller.js';
+import { isAdmin } from '../middlewares/auth.middleware.js';
 
 const usersRouter: Router = Router();
 

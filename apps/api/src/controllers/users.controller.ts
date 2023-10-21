@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { getUser, updateUser } from '../providers/users.provider';
-import { updateUserSchema } from '../validators/auth.validator';
-import { hashPassword, parseZodError, random } from '../lib/helpers';
+import { getUser, updateUser } from '../providers/users.provider.js';
+import { updateUserSchema } from '../validators/auth.validator.js';
+import { hashPassword, parseZodError, random } from '../lib/helpers.js';
 
 export const getProfile = async (req: Request, res: Response) => {
   if (!req.user)

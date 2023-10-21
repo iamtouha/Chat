@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { isAdmin, isAuthenticated } from '../middlewares/auth.middleware';
-import authRouter from './auth.router';
-import usersRouter from './users.router';
-import conversationRouter from './conversations.router';
-import messagesRouter from './messages.router';
-import filesRouter from './files.router';
+import { isAdmin, isAuthenticated } from '../middlewares/auth.middleware.js';
+import authRouter from './auth.router.js';
+import usersRouter from './users.router.js';
+import conversationRouter from './conversations.router.js';
+import messagesRouter from './messages.router.js';
+import filesRouter from './files.router.js';
 
 const router: Router = Router();
 

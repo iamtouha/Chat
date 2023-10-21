@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { uploadFile, countSize } from '../controllers/files.controller';
-import { upload } from '../lib/uploader';
+import { uploadFile, countSize } from '../controllers/files.controller.js';
+import { upload } from '../lib/uploader.js';
 
 const filesRouter: Router = Router();
 

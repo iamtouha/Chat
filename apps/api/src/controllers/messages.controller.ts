@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { newMessage, getMessages } from '../providers/messages.provider';
-import { messageInputSchema } from '../validators/message.validator';
-import { parseZodError } from '../lib/helpers';
+import { newMessage, getMessages } from '../providers/messages.provider.js';
+import { messageInputSchema } from '../validators/message.validator.js';
+import { parseZodError } from '../lib/helpers.js';
+import type { Request, Response } from 'express';
 
 export const createMessage = async (req: Request, res: Response) => {
   try {

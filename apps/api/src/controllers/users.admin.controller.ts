@@ -4,7 +4,7 @@ import {
   getUsers,
   updateUser,
   deleteUser,
-} from '../providers/users.provider';
+} from '../providers/users.provider.js';
 
 export const makeAdmin = async (req: Request, res: Response) => {
   if (!req.user) return;

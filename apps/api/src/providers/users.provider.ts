@@ -1,4 +1,4 @@
-import { prisma } from '../database';
+import { prisma } from '../database.js';
 
 export const getUser = prisma.user.findFirst;
 export const getUsers = prisma.user.findMany;

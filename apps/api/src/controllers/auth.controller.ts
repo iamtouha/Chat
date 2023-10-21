@@ -1,10 +1,14 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   loginInputSchema,
   registerInputSchema,
-} from '../validators/auth.validator';
-import { createUser, getUser, updateUser } from '../providers/users.provider';
-import { hashPassword, random, parseZodError } from '../lib/helpers';
+} from '../validators/auth.validator.js';
+import {
+  createUser,
+  getUser,
+  updateUser,
+} from '../providers/users.provider.js';
+import { hashPassword, random, parseZodError } from '../lib/helpers.js';
 
 const COOKIE_NAME = 'AUTH_TOKEN';
 
@@ -43,6 +47,7 @@ export const login = async (req: Request, res: Response) => {
     select: { id: true, username: true, email: true, sessionToken: true },
   });
   res.cookie(COOKIE_NAME, sessionToken, {
+    domain: 'localhost',
     path: '/',
     httpOnly: true,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
