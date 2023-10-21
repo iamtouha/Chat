@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import router from './router/index.js';
+import externalRouter from './external/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,8 @@ export const createApp: () => Express = () => {
     .use(cookieParser())
     .use(morgan('dev'))
     .use('/', express.static(path.join(__dirname, '../..', 'client', 'dist')))
-    .use('/api', router);
+    .use('/api', router)
+    .use('/external', externalRouter);
   return app;
 };
 
