@@ -23,6 +23,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.427.0
         version: 3.427.0
+      '@lucia-auth/adapter-prisma':
+        specifier: ^3.0.2
+        version: 3.0.2(@prisma/client@5.4.1)(lucia@2.7.1)
       '@prisma/client':
         specifier: ^5.4.1
         version: 5.4.1(prisma@5.4.1)
@@ -1457,6 +1460,16 @@ packages:
     resolution: {integrity: sha512-QuTgnG52Poic7uM1AN5yJ09QMe0O28e10XzSvWDz02TJiiKee4stsiownEIadWm8nYzyDAyT+gKzUoZmiWQtsQ==}
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.1.1
+    dev: false
+
+  /@lucia-auth/adapter-prisma@3.0.2(@prisma/client@5.4.1)(lucia@2.7.1):
+    resolution: {integrity: sha512-EyJWZene1/zasPwPctv8wwNErZt5mwwm5JATbhg+kXr3R8pbC7lJfVzDTAeeFClVH5k/FywRcsBl3JkPaNIcow==}
+    peerDependencies:
+      '@prisma/client': ^4.2.0 || ^5.0.0
+      lucia: ^2.0.0
+    dependencies:
+      '@prisma/client': 5.4.1(prisma@5.4.1)
+      lucia: 2.7.1
     dev: false
 
   /@mapbox/node-pre-gyp@1.0.11:

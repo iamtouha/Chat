@@ -8,7 +8,8 @@ import {
   getUser,
   updateUser,
 } from '../providers/users.provider.js';
-import { hashPassword, random, parseZodError } from '../lib/helpers.js';
+import { parseZodError, getExceptionType } from '../lib/helpers.js';
+import { auth } from '@/lib/lucia.js';
 
 const COOKIE_NAME = 'AUTH_TOKEN';
 
@@ -21,37 +22,16 @@ export const login = async (req: Request, res: Response) => {
       result: parseZodError(result.error),
     });
   }
-  const { email, password } = result.data;
-  const user = await getUser({ where: { email } });
-  if (!user) {
-    return res.status(403).json({
-      status: 'error',
-      message: 'Invalid credentials',
-    });
-  }
-  const expectedHash = hashPassword(user.salt, password);
-  if (expectedHash !== user.password) {
-    return res.status(403).json({
-      status: 'error',
-      message: 'Invalid credentials',
-    });
-  }
+  const { username, password } = result.data;
 
-  const sessionToken = hashPassword(random(), user.id);
+  const session = auth.useKey('username', username.toLowerCase(), password);
+
   const updatedUser = await updateUser({
-    where: { email },
-    data: {
-      lastLogin: new Date(),
-      sessionToken,
-    },
-    select: { id: true, username: true, email: true, sessionToken: true },
+    where: { username: username.toLowerCase() },
+    data: { lastLogin: new Date() },
+    select: { id: true, username: true, email: true },
   });
-  res.cookie(COOKIE_NAME, sessionToken, {
-    domain: 'localhost',
-    path: '/',
-    httpOnly: true,
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-  });
+
   return res.status(200).json({
     status: 'success',
     message: 'User logged in successfully',
@@ -70,33 +50,28 @@ export const register = async (req: Request, res: Response) => {
       });
     }
     const { email, password, username } = result.data;
-    const existingUser = await getUser({
-      where: { OR: [{ email }, { username }] },
-      select: { username: true },
-    });
-    if (existingUser) {
-      return res.status(400).json({
-        status: 'error',
-        message:
-          existingUser.username === username
-            ? 'Username is not available.'
-            : 'User with this email already exists.',
-      });
-    }
-    const salt = random();
-    const hashedPassword = hashPassword(salt, password);
-    const user = await createUser({
-      data: { username, email, password: hashedPassword, salt },
-      select: { id: true, username: true, email: true },
+
+    const user = await auth.createUser({
+      attributes: { email, username, active: false, role: 'USER' },
+      key: {
+        providerId: 'username',
+        providerUserId: username.toLowerCase(),
+        password,
+      },
     });
     return res.status(201).json({
       status: 'success',
       message: 'User created successfully',
-      result: user,
+      result: { id: user.id, username: user.username, email: user.email },
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).send({ message: 'Internal Server Error' });
+    const { type, status, message } = getExceptionType(error);
+
+    return res.status(status).json({
+      status: 'error',
+      message,
+      type,
+    });
   }
 };
 

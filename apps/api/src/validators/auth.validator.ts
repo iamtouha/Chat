@@ -7,7 +7,7 @@ export const registerInputSchema = z.object({
 });
 
 export const loginInputSchema = z.object({
-  email: z.string().email(),
+  username: z.string(),
   password: z.string().min(6).max(100),
 });
 export const updateUserSchema = z.object({

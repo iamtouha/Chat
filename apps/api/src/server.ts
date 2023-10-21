@@ -13,8 +13,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const createApp: () => Express = () => {
-  console.log(__dirname);
-
   const app = express();
   app
     .disable('x-powered-by')

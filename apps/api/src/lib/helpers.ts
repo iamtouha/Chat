@@ -1,4 +1,5 @@
-import crypto from 'crypto';
+import { Prisma } from '@prisma/client';
+import { LuciaError } from 'lucia';
 import { ZodError } from 'zod';
 
 export const parseZodError = (error: ZodError) => {
@@ -8,9 +9,34 @@ export const parseZodError = (error: ZodError) => {
   });
 };
 
-export const random = () => crypto.randomBytes(128).toString('base64');
-export const hashPassword = (salt: string, password: string) =>
-  crypto
-    .createHmac('sha256', [salt, password].join('/'))
-    .update(process.env.TOKEN_SECRET!)
-    .digest('hex');
+export const getExceptionType = (error: unknown) => {
+  const UnknownException = {
+    type: 'UnknownException',
+    status: 500,
+    message: 'An unknown exception occurred',
+  };
+
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    const target = error.meta?.target as string[] | undefined;
+    switch (error.code) {
+      case 'P2002':
+        return {
+          type: 'UniqueConstraintViolationException',
+          status: 400,
+          message: `user with given ${target?.join?.(', ')} already exists.`,
+        };
+
+      default:
+        return UnknownException;
+    }
+  }
+  if (error instanceof LuciaError) {
+    return {
+      type: 'LuciaException',
+      status: 400,
+      message: error.message,
+    };
+  }
+
+  return UnknownException;
+};
