@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
     select: { id: true, username: true, email: true, sessionToken: true },
   });
   res.cookie(COOKIE_NAME, sessionToken, {
-    domain: 'localhost',
+    domain: process.env.COOKIE_DOMAIN,
     path: '/',
     httpOnly: true,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
