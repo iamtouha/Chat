@@ -48,7 +48,7 @@ export const NewClient = () => {
     {
       onSuccess: (data) => {
         toast.success('client added successfully');
-        navigate('/client?id=' + data.id);
+        navigate('/admin/client?id=' + data.id);
       },
       onError: (err) => {
         if (err instanceof AxiosError) {

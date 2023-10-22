@@ -69,7 +69,7 @@ export const UpdateClient = () => {
     {
       onSuccess: (data) => {
         toast.success('Client updated successfully');
-        navigate(`/client?id=${data.id}`);
+        navigate(`/admin/client?id=${data.id}`);
       },
       onError: (err) => {
         if (err instanceof AxiosError) {
