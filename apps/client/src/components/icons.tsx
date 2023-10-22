@@ -63,9 +63,13 @@ import {
   Clipboard,
   File as FileIcon,
   ShieldCheck,
+  Inbox,
+  Gauge,
 } from 'lucide-react';
 
 export const Icons = {
+  inbox: Inbox,
+  gauge: Gauge,
   shieldCheck: ShieldCheck,
   file: FileIcon,
   clipboard: Clipboard,

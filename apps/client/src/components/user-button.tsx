@@ -9,12 +9,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from './ui/button';
 import { useUserStore } from '@/store/userStore';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Icons } from './icons';
 import axios from '@/lib/axios';
 import { useMutation } from '@tanstack/react-query';
 
 export const UserButton = () => {
+  const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
 
@@ -22,7 +23,10 @@ export const UserButton = () => {
     ['logout'],
     async () => await axios.post('/api/v1/auth/logout'),
     {
-      onSuccess: () => setUser(null),
+      onSuccess: () => {
+        setUser(null);
+        navigate('/auth/login');
+      },
     },
   );
 
@@ -54,10 +58,18 @@ export const UserButton = () => {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/">
-              <Icons.terminal className="mr-2 h-4 w-4" aria-hidden="true" />
-              Dashboard
+              <Icons.inbox className="mr-2 h-4 w-4" aria-hidden="true" />
+              Inbox
             </Link>
           </DropdownMenuItem>
+          {user.role === 'ADMIN' ? (
+            <DropdownMenuItem asChild>
+              <Link to="/admin">
+                <Icons.gauge className="mr-2 h-4 w-4" aria-hidden="true" />
+                Dashboard
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild onClick={() => logOut()}>
