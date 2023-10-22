@@ -10,6 +10,7 @@ import { Dashboard } from './views/admin/dashboard';
 import { ClientView } from './views/admin/client';
 import { NewClient } from './views/admin/new-client';
 import { UpdateClient } from './views/admin/update-client';
+import { Account } from './views/account';
 
 export const router = createHashRouter([
   {
@@ -30,6 +31,11 @@ export const router = createHashRouter([
           },
         ],
       },
+      {
+        path: '/account',
+        element: <Account />,
+      },
+
       {
         path: '/admin',
         element: <AdminLayout />,
