@@ -1,8 +1,24 @@
 import { Header } from '@/components/chat-header';
+import { Icons } from '@/components/icons';
+import { useUserStore } from '@/store/userStore';
 import { ResponsiveChatList } from '@/views/chat-list';
 import { Outlet } from 'react-router-dom';
 
 export const HomeLayout = () => {
+  const user = useUserStore((state) => state.user);
+
+  if (!user?.active) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div>
+          <Icons.warning className="w-20 h-20 text-red-500 mx-auto mb-4" />
+          <h1 className="text-2xl text-center">
+            Your account is not activated please contact the support.
+          </h1>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <Header />

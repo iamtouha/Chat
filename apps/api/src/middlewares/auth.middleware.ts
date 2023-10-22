@@ -13,18 +13,7 @@ export const isAuthenticated = async (
     return res.sendStatus(401);
   }
   req.user = session.user;
-  authRequest.setSession(null);
-  // const sessionToken = req.cookies['AUTH_TOKEN'];
 
-  // if (!sessionToken) {
-  //   return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-  // }
-  // const user = await getUser({ where: { sessionToken } });
-
-  // if (!user) {
-  //   return res.status(401).json({ status: 'error', message: 'Unauthorized' });
-  // }
-  // req.user = user;
   next();
 };
 

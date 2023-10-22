@@ -8,6 +8,7 @@ import { parseZodError } from '../lib/helpers.js';
 import type { Request, Response } from 'express';
 
 export const createConversation = async (req: Request, res: Response) => {
+  console.log(req.body.apiKey);
   const result = createConversationSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
@@ -22,7 +23,7 @@ export const createConversation = async (req: Request, res: Response) => {
       name: result.data.name,
       email: result.data.email,
       phone: result.data.phone,
-      userId: result.data.clientId,
+      user: { connect: { apiKey: result.data.apiKey } },
       lastActive: new Date(),
     },
   });

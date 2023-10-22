@@ -12,16 +12,16 @@ const queryClient = new QueryClient();
 function App() {
   const user = useUserStore((state) => state.user);
   useEffect(() => {
-    if (!user?.id) return;
     socket.connect();
     const onSocketConnect = () => {
-      socket.emit('user_connected', user?.id);
+      if (!user?.apiKey) return;
+      socket.emit('user_connected', user.apiKey);
     };
     socket.on('connect', onSocketConnect);
     return () => {
       socket.off('connect', onSocketConnect);
     };
-  }, [user?.id]);
+  }, [user?.apiKey]);
 
   return (
     <main>

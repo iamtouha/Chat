@@ -37,7 +37,6 @@ export const ChatPage = () => {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const messageBox = React.useRef<HTMLDivElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,7 +70,7 @@ export const ChatPage = () => {
   );
 
   const { mutate: sendMessage } = useMutation(
-    ['sendmessage', params.get('id'), text],
+    ['sendmessage', params.get('id'), text, user?.apiKey],
     async ({
       content,
       file,
@@ -80,12 +79,13 @@ export const ChatPage = () => {
       file: File | null;
       key: string;
     }) => {
+      if (!user) throw new Error('User not found');
       let fileId: number | null = null;
       let contentUrl: string | null = null;
       if (file) {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('client', user?.id ?? '');
+        formData.append('apiKey', user.apiKey);
         const res = await axios.post<ResponsePayload<FileData>>(
           `/api/v1/files/upload`,
           formData,
@@ -143,7 +143,7 @@ export const ChatPage = () => {
           conversationId: conversation?.id ?? '',
         };
         socket.emit('message_sent', message, conversation?.id);
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => [message, ...prev]);
         setText('');
       },
       onSuccess: (data, { key }) => {
@@ -174,12 +174,6 @@ export const ChatPage = () => {
       socket.off('message_updated', onMessageUpdated);
     };
   }, [conversation?.id]);
-
-  React.useEffect(() => {
-    messageBox.current?.scrollTo({
-      top: messageBox.current.scrollHeight,
-    });
-  }, [messages]);
 
   const lastActive = React.useMemo(() => {
     if (!conversation?.createdAt) return null;
@@ -216,10 +210,7 @@ export const ChatPage = () => {
                 </Sheet>
               </div>
             </CardHeader>
-            <CardContent
-              ref={messageBox}
-              className="space-y-2 overflow-y-auto px-0 flex flex-col-reverse"
-            >
+            <CardContent className="space-y-2 overflow-y-auto px-0 flex flex-col-reverse">
               {messages.map((message) => (
                 <ConversationText
                   key={message.id}

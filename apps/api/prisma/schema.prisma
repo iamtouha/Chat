@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id          String    @id @unique
-  clientId    String?   @unique @default(uuid())
+  apiKey      String    @unique @default(uuid())
   email       String    @unique
   username    String    @unique
   active      Boolean   @default(false)
@@ -87,6 +87,7 @@ model File {
 }
 
 enum USER_ROLE {
+  SUPER_ADMIN
   ADMIN
   USER
 }

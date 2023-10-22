@@ -10,7 +10,7 @@ export class ChatWidget extends LitElement {
   @property({ type: Boolean }) open = false;
   @property({ type: Boolean }) fullscreen = false;
   @property({ type: String }) chatTitle = 'Chat';
-  @property({ type: String }) clientid = '';
+  @property({ type: String }) apikey = '';
 
   /** Theme properties */
   @property({ type: String }) backgroundColor = 'hsl(0 0% 100%)';
@@ -53,7 +53,7 @@ export class ChatWidget extends LitElement {
           </div>
         </div>
         <div class="app-wrapper">
-          <chat-component clientid="${this.clientid}" />
+          <chat-component apikey="${this.apikey}" />
         </div>
       </div>`;
   }

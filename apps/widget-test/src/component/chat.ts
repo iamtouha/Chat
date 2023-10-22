@@ -16,7 +16,7 @@ import './message-item';
 
 @customElement('chat-component')
 export class ChatComponent extends LitElement {
-  @property({ type: String }) clientid = '';
+  @property({ type: String }) apikey = '';
   @state() private _conversationid = '';
   @state() private _conversationLoading = false;
   @state() private _messages: Message[] = [];
@@ -136,7 +136,7 @@ export class ChatComponent extends LitElement {
   _uploadFile = async () => {
     const formData = new FormData();
     formData.append('file', this._selectedFile as Blob);
-    formData.append('client', this.clientid);
+    formData.append('apiKey', this.apikey);
     const response = await fetch(`${this._serverUrl}/api/v1/files/upload`, {
       method: 'POST',
       body: formData,
@@ -182,7 +182,7 @@ export class ChatComponent extends LitElement {
     };
     this._messages = [newMessage, ...this._messages];
     messageInput.value = '';
-    socket.emit('message_sent', newMessage, this.clientid);
+    socket.emit('message_sent', newMessage, this.apikey);
 
     const filedata = this._selectedFile ? await this._uploadFile() : null;
     this._selectedFile = null;
@@ -214,7 +214,7 @@ export class ChatComponent extends LitElement {
     this._messages = this._messages.map((message) =>
       message.id === localId ? data.result : message,
     );
-    socket.emit('message_update_sent', data.result, this.clientid, localId);
+    socket.emit('message_update_sent', data.result, this.apikey, localId);
   };
 
   _createConversation = async (info: { name: string; email: string }) => {
@@ -222,7 +222,7 @@ export class ChatComponent extends LitElement {
     const response = await fetch(`${this._serverUrl}/api/v1/conversations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...info, clientId: this.clientid }),
+      body: JSON.stringify({ ...info, apiKey: this.apikey }),
     });
     if (!response.ok) {
       this._conversationLoading = false;
@@ -234,7 +234,7 @@ export class ChatComponent extends LitElement {
       return;
     }
     this._conversationid = data.result.id;
-    socket.emit('conversation_started', data.result, this.clientid);
+    socket.emit('conversation_started', data.result, this.apikey);
     localStorage.setItem('conversationid', this._conversationid);
   };
 

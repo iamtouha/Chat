@@ -13,8 +13,8 @@ import {
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { cn, useQueryparams } from '@/lib/utils';
-import { ResponsePayload, Client } from '@/types.admin';
 import { PasswordInput } from '@/components/password-input';
+import type { ResponsePayload, Client } from '@/types';
 
 export const ClientView = () => {
   const [confirmRemove, setConfirmRemove] = useState(false);
@@ -126,7 +126,7 @@ export const ClientView = () => {
     },
   );
   const copyApiKey = () => {
-    navigator.clipboard.writeText(client?.id ?? '');
+    navigator.clipboard.writeText(client?.apiKey ?? '');
     toast.success('API key copied to clipboard');
   };
 
@@ -241,7 +241,11 @@ export const ClientView = () => {
           <div>
             <div className="max-w-md w-full mt-6 flex gap-2">
               <div className="flex-1">
-                <PasswordInput value={client.id} readOnly className="w-full" />
+                <PasswordInput
+                  value={client.apiKey}
+                  readOnly
+                  className="w-full"
+                />
               </div>
               <Button variant={'outline'} onClick={copyApiKey}>
                 Copy API key
@@ -250,7 +254,7 @@ export const ClientView = () => {
             <div className="mt-4">
               <h3 className="text-xl">
                 Storage Usage:{' '}
-                {size
+                {typeof size === 'number'
                   ? `${(size / (1024 * 1024)).toFixed(2)} MB`
                   : 'loading...'}
               </h3>

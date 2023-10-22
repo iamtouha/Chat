@@ -7,7 +7,10 @@ export type User = {
   role: 'ADMIN' | 'USER';
   createdAt: string;
   updatedAt: string;
+  apiKey: string;
 };
+
+export type Client = User;
 
 export type Conversation = {
   id: string;
@@ -39,7 +42,7 @@ export type FileData = {
   size: number;
   clientId: string;
   messageId: number | null;
-  createdAt: Date;
+  createdAt: string;
 };
 
 export type ResponsePayload<T> =

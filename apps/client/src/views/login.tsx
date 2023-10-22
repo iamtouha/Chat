@@ -19,7 +19,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PasswordInput } from '@/components/password-input';
 
 const loginFormSchema = z.object({
-  email: z.string().email(),
+  username: z.string(),
   password: z.string().min(8),
 });
 
@@ -31,7 +31,7 @@ export const Login = () => {
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -72,12 +72,12 @@ export const Login = () => {
               >
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="example@email.com" {...field} />
+                        <Input placeholder="user" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

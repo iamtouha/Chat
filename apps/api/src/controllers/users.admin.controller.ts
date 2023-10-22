@@ -48,6 +48,12 @@ export const removeAdmin = async (req: Request, res: Response) => {
 export const deactivateUser = async (req: Request, res: Response) => {
   if (!req.user) return;
   const userId = req.params.id;
+  if (req.user.id === userId) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'You cannot deactivate your own account',
+    });
+  }
   const user = await updateUser({
     where: { id: userId },
     data: { active: false },
@@ -83,7 +89,20 @@ export const removeUser = async (req: Request, res: Response) => {
       message: 'You cannot remove your own account',
     });
   }
-  const user = await deleteUser({ where: { id: req.params.id } });
+  const user = await getUser({ where: { id: req.params.id } });
+  if (!user) {
+    return res.status(404).json({
+      status: 'error',
+      message: 'User not found',
+    });
+  }
+  if (user?.role === 'ADMIN') {
+    return res.status(400).json({
+      status: 'error',
+      message: 'You cannot remove an admin account',
+    });
+  }
+  await auth.deleteUser(user.id);
   return res.status(200).json({
     status: 'success',
     message: 'User deleted successfully',
@@ -98,18 +117,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
       message: "you're not authrized to perform this action",
     });
   }
-  const users = await getUsers({
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      role: true,
-      active: true,
-      lastLogin: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  const users = await getUsers({});
   return res.status(200).json({
     status: 'success',
     message: 'Users retrieved successfully',
@@ -119,19 +127,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const getUserFromId = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const user = await getUser({
-    where: { id },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      role: true,
-      active: true,
-      lastLogin: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  const user = await getUser({ where: { id } });
   if (!user) {
     return res.status(404).json({
       status: 'error',

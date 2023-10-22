@@ -9,10 +9,10 @@ export const uploadFile = async (req: Request, res: Response) => {
       .status(400)
       .json({ status: 'error', message: 'No file provided' });
   }
-  if (!req.body.client) {
+  if (!req.body.apiKey) {
     return res
       .status(400)
-      .json({ status: 'error', message: 'No client provided' });
+      .json({ status: 'error', message: 'No api key provided' });
   }
 
   const { location, mimetype, key, originalname, size } = req.file as S3File;
@@ -24,7 +24,7 @@ export const uploadFile = async (req: Request, res: Response) => {
       key,
       size,
       location,
-      clientId: req.body.client,
+      client: { connect: { apiKey: req.body.apiKey } },
     },
   });
 

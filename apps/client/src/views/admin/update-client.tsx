@@ -19,11 +19,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PasswordInput } from '@/components/password-input';
 import { Icons } from '@/components/icons';
-import type { Client, ResponsePayload } from '@/types.admin';
+import type { Client, ResponsePayload } from '@/types';
 
 const updateClientSchema = z.object({
   email: z.string().email(),
-  username: z.string().min(2).max(100),
   password: z.string().min(6).max(100).optional(),
 });
 
@@ -35,7 +34,7 @@ export const UpdateClient = () => {
 
   const form = useForm<UpdateClientForm>({
     resolver: zodResolver(updateClientSchema),
-    defaultValues: { email: '', username: '' },
+    defaultValues: { email: '' },
   });
 
   const { data: client, isLoading } = useQuery(
@@ -52,7 +51,6 @@ export const UpdateClient = () => {
     {
       onSuccess: (data) => {
         form.setValue('email', data.email);
-        form.setValue('username', data.username);
       },
     },
   );
@@ -107,19 +105,13 @@ export const UpdateClient = () => {
                   form.handleSubmit((data) => updateClient(data))(...args)
                 }
               >
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input value={client.username} readOnly />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
                 <FormField
                   control={form.control}
                   name="email"
