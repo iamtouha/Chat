@@ -24,6 +24,11 @@ router.post('/upload', upload.single('file'), (req, res) => {
   });
 });
 
+router.post('/test', (req, res) => {
+  console.log(req.headers);
+  res.send('ok');
+});
+
 router.post('/BankData', async (req, res) => {
   let Bank = req.body;
   let result = await bankCollection.insertOne(Bank);
@@ -77,6 +82,7 @@ router.delete('/usersDelete/:id', async (req, res) => {
 
 router.post('/orderData', async (req, res) => {
   let order = req.body;
+  console.log(order);
   let result = await orderCollection.insertOne(order);
   res.send(result);
 });
