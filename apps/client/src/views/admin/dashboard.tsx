@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 import { Icons } from '@/components/icons';
 import { Input } from '@/components/ui/input';
-import type { Client, ResponsePayload } from '@/types.admin';
+import type { Client, ResponsePayload } from '@/types';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 

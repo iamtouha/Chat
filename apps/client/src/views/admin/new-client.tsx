@@ -17,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PasswordInput } from '@/components/password-input';
-import type { Client, ResponsePayload } from '@/types.admin';
+import type { Client, ResponsePayload } from '@/types';
 import { Icons } from '@/components/icons';
 
 const registerClientSchema = z.object({
