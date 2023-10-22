@@ -5,6 +5,9 @@ import {
   updateUser,
   deleteUser,
 } from '../providers/users.provider.js';
+import { auth } from '../lib/lucia.js';
+import { updateUserSchema } from '../validators/auth.validator.js';
+import { getExceptionType, parseZodError } from '../lib/helpers.js';
 
 export const makeAdmin = async (req: Request, res: Response) => {
   if (!req.user) return;
@@ -140,4 +143,56 @@ export const getUserFromId = async (req: Request, res: Response) => {
     message: 'User retrieved successfully',
     result: user,
   });
+};
+
+export const updateUserFromId = async (req: Request, res: Response) => {
+  if (!req.params.id) return;
+  if (req.user?.id === req.params.id) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'You cannot update your own account',
+    });
+  }
+  const result = updateUserSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Invalid request payload',
+      result: parseZodError(result.error),
+    });
+  }
+
+  if (req.user?.role === 'ADMIN') {
+    return res.status(403).json({
+      status: 'error',
+      message: "you're not authrized to perform this action",
+    });
+  }
+  try {
+    const existingUser = await auth.getUser(req.params.id);
+    if (result.data.password) {
+      await auth.updateKeyPassword(
+        'username',
+        existingUser.username,
+        result.data.password,
+      );
+      await auth.invalidateAllUserSessions(existingUser.userId);
+    }
+    if (result.data.email) {
+      await auth.updateUserAttributes(existingUser.id, {
+        email: result.data.email,
+      });
+    }
+    return res.status(200).json({
+      status: 'success',
+      message: 'User updated successfully',
+    });
+  } catch (error) {
+    const { type, status, message } = getExceptionType(error);
+    return res.status(status).json({
+      status: 'error',
+      message,
+      type,
+    });
+  }
 };

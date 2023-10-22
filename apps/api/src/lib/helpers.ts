@@ -31,11 +31,17 @@ export const getExceptionType = (error: unknown) => {
     }
   }
   if (error instanceof LuciaError) {
-    return {
-      type: 'LuciaException',
-      status: 400,
-      message: error.message,
-    };
+    switch (error.message) {
+      case 'AUTH_INVALID_KEY_ID':
+      case 'AUTH_INVALID_PASSWORD':
+        return {
+          type: 'InvalidCredentialException',
+          status: 400,
+          message: 'Username or password is incorrect',
+        };
+      default:
+        return UnknownException;
+    }
   }
 
   return UnknownException;

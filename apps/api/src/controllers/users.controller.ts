@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
-import { getUser, updateUser } from '../providers/users.provider.js';
+import { getUser } from '../providers/users.provider.js';
 import { updateUserSchema } from '../validators/auth.validator.js';
-import { parseZodError } from '../lib/helpers.js';
+import { getExceptionType, parseZodError } from '../lib/helpers.js';
+import { auth } from '../lib/lucia.js';
 
 export const getProfile = async (req: Request, res: Response) => {
   if (!req.user)
@@ -9,18 +10,29 @@ export const getProfile = async (req: Request, res: Response) => {
       status: 'error',
       message: 'Unauthorized',
     });
-
+  const user = await getUser({
+    where: { id: req.user.id },
+    select: {
+      id: true,
+      clientId: true,
+      username: true,
+      email: true,
+      active: true,
+      role: true,
+      lastLogin: true,
+      createdAt: true,
+    },
+  });
+  if (!user) {
+    return res.status(404).json({
+      status: 'error',
+      message: 'User not found',
+    });
+  }
   return res.status(200).json({
     status: 'success',
     message: 'User profile retrieved successfully',
-    result: {
-      id: req.user.id,
-      username: req.user.username,
-      email: req.user.email,
-      lastLogin: req.user.lastLogin,
-      active: req.user.active,
-      role: req.user.role,
-    },
+    result: user,
   });
 };
 
@@ -33,14 +45,22 @@ export const makeInitialAdmin = async (req: Request, res: Response) => {
       message: 'Admin already exists',
     });
   }
-  await updateUser({ where: { id: req.user.id }, data: { role: 'ADMIN' } });
+  await auth.updateUserAttributes(req.user.userId, { role: 'ADMIN' });
+  await auth.invalidateAllUserSessions(req.user.userId);
+  const session = await auth.createSession({
+    userId: req.user.userId,
+    attributes: {},
+  });
+  const authRequest = auth.handleRequest(req, res);
+  authRequest.setSession(session);
+
   return res.status(200).json({
     status: 'success',
     message: 'User is now an admin',
   });
 };
 
-export const updateUserData = async (req: Request, res: Response) => {
+export const updateProfile = async (req: Request, res: Response) => {
   const result = updateUserSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
@@ -49,59 +69,38 @@ export const updateUserData = async (req: Request, res: Response) => {
       result: parseZodError(result.error),
     });
   }
-  if (req.user?.role !== 'ADMIN' && req.user?.id !== req.params.id) {
-    return res.status(403).json({
+  if (!req.user) return;
+
+  try {
+    if (result.data.password) {
+      await auth.updateKeyPassword(
+        'username',
+        req.user.username,
+        result.data.password,
+      );
+      await auth.invalidateAllUserSessions(req.user.userId);
+      const session = await auth.createSession({
+        userId: req.user.userId,
+        attributes: {},
+      });
+      const authRequest = auth.handleRequest(req, res);
+      authRequest.setSession(session);
+    }
+    if (result.data.email) {
+      await auth.updateUserAttributes(req.user.userId, {
+        email: result.data.email,
+      });
+    }
+    return res.status(200).json({
+      status: 'success',
+      message: 'User updated successfully',
+    });
+  } catch (error) {
+    const { type, status, message } = getExceptionType(error);
+    return res.status(status).json({
       status: 'error',
-      message: 'Unauthorized',
+      message,
+      type,
     });
   }
-  const existingUser = await getUser({
-    where: {
-      OR: [{ email: result.data.email }, { username: result.data.username }],
-      NOT: { id: req.params.id },
-    },
-    select: { username: true, id: true },
-  });
-  if (existingUser) {
-    return res.status(400).json({
-      status: 'error',
-      message:
-        existingUser.username === result.data.username
-          ? 'Cannot use this username'
-          : 'Cannot use this email',
-    });
-  }
-
-  let salt: string | undefined;
-  let hashedPassword: string | undefined;
-
-  if (result.data.password) {
-  }
-  // const user = await updateUser({
-  //   where: { id: req.params.id },
-  //   data: result.data.password
-  //     ? {
-  //         username: result.data.username,
-  //         email: result.data.email,
-  //         salt,
-  //         password: hashedPassword,
-  //         sessionToken: null,
-  //       }
-  //     : {
-  //         username: result.data.username,
-  //         email: result.data.email,
-  //       },
-  // });
-
-  return res.status(200).json({
-    status: 'success',
-    message: 'User profile updated successfully',
-    result: {
-      // id: user.id,
-      // username: user.username,
-      // email: user.email,
-      // lastLogin: user.lastLogin,
-      // role: user.role,
-    },
-  });
 };
