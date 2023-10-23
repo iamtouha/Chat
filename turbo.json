@@ -19,7 +19,7 @@
       "cache": false,
       "persistent": true
     },
-    "start": {},
-    "db:generate": { "cache": false }
+    "db:generate": { "cache": false },
+    "start": {}
   }
 }

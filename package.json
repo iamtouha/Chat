@@ -8,7 +8,7 @@
     "start": "turbo run start",
     "db:generate": "turbo run db:generate",
     "build-production": "turbo run build --filter=api --filter=client",
-    "build-widget": "turbo run build --filter=chat-widget",
+    "build-widget": "turbo run build --filter=@innomarkt/chat-widget",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
