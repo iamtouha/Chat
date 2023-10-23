@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { upload } from './uploader.js';
 import {
+  ContactCollection,
   ObjectId,
   bankCollection,
   orderCollection,
@@ -27,6 +28,18 @@ router.post('/upload', upload.single('file'), (req, res) => {
 router.post('/test', (req, res) => {
   console.log(req.headers);
   res.send('ok');
+});
+
+router.post('/ContactData', async (req, res) => {
+  let contact = req.body;
+  let result = await ContactCollection.insertOne(contact);
+  res.send(result);
+});
+
+//get contact info
+router.get('/contact', async (req, res) => {
+  let result = await ContactCollection.find().toArray();
+  res.send(result);
 });
 
 router.post('/BankData', async (req, res) => {
@@ -63,6 +76,18 @@ router.post('/users', async (req, res) => {
 });
 
 //     // // check user role show Dashboard _________________________________________
+router.patch('/usersAdmin/:id', async (req, res) => {
+  let id = req.params.id;
+  let filter = { _id: new ObjectId(id) };
+  let updateDoc = {
+    $set: {
+      role: 'admin',
+    },
+  };
+
+  let result = await userCollection.updateOne(filter, updateDoc);
+  res.send(result);
+});
 
 router.get('/userRoleCheck/:email', async (req, res) => {
   let email = req.params.email;
@@ -118,19 +143,6 @@ router.put('/profileUpdate/:id', async (req, res) => {
   };
   let result = await userCollection.updateOne(filter, updateProfile, option);
   // console.log(result)
-  res.send(result);
-});
-
-router.patch('/usersAdmin/:id', async (req, res) => {
-  let id = req.params.id;
-  let filter = { _id: new ObjectId(id) };
-  let updateDoc = {
-    $set: {
-      role: 'admin',
-    },
-  };
-
-  let result = await userCollection.updateOne(filter, updateDoc);
   res.send(result);
 });
 

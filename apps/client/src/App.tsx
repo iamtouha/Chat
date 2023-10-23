@@ -15,6 +15,7 @@ function App() {
     if (!user?.apiKey) return;
     socket.connect();
     const onSocketConnect = () => {
+      console.log('connected');
       socket.emit('user_connected', user.apiKey);
     };
     socket.on('connect', onSocketConnect);

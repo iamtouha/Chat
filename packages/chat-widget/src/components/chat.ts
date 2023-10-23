@@ -137,7 +137,9 @@ export class ChatComponent extends LitElement {
   }
   connectedCallback() {
     super.connectedCallback();
-
+    socket.on('connect', () => {
+      console.log('connected');
+    });
     const conversationid = localStorage.getItem('conversationid');
     if (conversationid) {
       this._conversationid = conversationid;
@@ -234,11 +236,12 @@ export class ChatComponent extends LitElement {
 
   _createConversation = async (info: { name: string; email: string }) => {
     this._conversationLoading = true;
-    const response = await fetch(`${serverUrl}/api/v1/conversations`, {
+    const response = await fetch(`${serverUrl}/api/v1/conversations/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...info, apiKey: this.apikey }),
     });
+    console.log({ ...info, apiKey: this.apikey });
     if (!response.ok) {
       this._conversationLoading = false;
       return;
