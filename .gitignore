@@ -11,7 +11,7 @@ coverage
 # production
 dist
 dist-ssr
-tsc-out
+build
 
 # misc
 .DS_Store

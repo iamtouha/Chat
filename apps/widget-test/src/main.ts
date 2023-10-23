@@ -1,0 +1,1 @@
+import '@innomarkt/chat-widget';

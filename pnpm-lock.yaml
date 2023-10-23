@@ -241,15 +241,9 @@ importers:
 
   apps/widget-test:
     dependencies:
-      dayjs:
-        specifier: ^1.11.9
-        version: 1.11.10
-      lit:
-        specifier: ^2.7.6
-        version: 2.8.0
-      socket.io-client:
-        specifier: ^4.7.2
-        version: 4.7.2
+      '@innomarkt/chat-widget':
+        specifier: workspace:*
+        version: link:../../packages/chat-widget
     devDependencies:
       typescript:
         specifier: ^5.0.2

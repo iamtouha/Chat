@@ -1,7 +1,7 @@
 {
   "name": "widget-test",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,9 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dayjs": "^1.11.9",
-    "lit": "^2.7.6",
-    "socket.io-client": "^4.7.2"
+    "@innomarkt/chat-widget": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.2",
