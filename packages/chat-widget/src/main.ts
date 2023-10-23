@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { baseStyles } from './styles';
-import { chatIcon, closeIcon, expandIcon, shrinkIcon } from './icons';
+import { baseStyles } from './lib/styles';
+import { chatIcon, closeIcon, expandIcon, shrinkIcon } from './lib/icons';
 
-import './chat';
+import './components/chat';
 
 @customElement('chat-widget')
 export class ChatWidget extends LitElement {

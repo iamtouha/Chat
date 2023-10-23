@@ -1,14 +1,19 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { baseStyles } from './styles';
+import { baseStyles } from '../lib/styles';
 import dayjs from 'dayjs';
-import socket from './socket';
-import { addImageIcon, sendIcon } from './icons';
-import type { Conversation, FileData, Message, ResponsePayload } from './types';
+import socket from '../lib/socket';
+import { addImageIcon, sendIcon } from '../lib/icons';
+import type {
+  Conversation,
+  FileData,
+  Message,
+  ResponsePayload,
+} from '../types';
 
 import './user-form';
 import './message-item';
-import { serverUrl } from './variables';
+import { serverUrl } from '../variables';
 
 @customElement('chat-component')
 export class ChatComponent extends LitElement {

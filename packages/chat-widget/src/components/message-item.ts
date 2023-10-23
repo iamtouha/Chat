@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { downloadIcon } from './icons';
-import { baseStyles } from './styles';
+import { downloadIcon } from '../lib/icons';
+import { baseStyles } from '../lib/styles';
 
 @customElement('message-item')
 export class MessageItem extends LitElement {

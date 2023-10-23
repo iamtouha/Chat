@@ -1,6 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { baseStyles } from './styles';
+import { baseStyles } from '../lib/styles';
 
 @customElement('user-form')
 export class UserForm extends LitElement {
