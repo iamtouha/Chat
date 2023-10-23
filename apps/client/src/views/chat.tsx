@@ -210,7 +210,7 @@ export const ChatPage = () => {
                 </Sheet>
               </div>
             </CardHeader>
-            <CardContent className="space-y-2 overflow-y-auto px-0 flex flex-col-reverse">
+            <CardContent className="gap-2 overflow-y-auto px-0 flex flex-col-reverse">
               {messages.map((message) => (
                 <ConversationText
                   key={message.id}

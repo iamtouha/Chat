@@ -12,9 +12,9 @@ const queryClient = new QueryClient();
 function App() {
   const user = useUserStore((state) => state.user);
   useEffect(() => {
+    if (!user?.apiKey) return;
     socket.connect();
     const onSocketConnect = () => {
-      if (!user?.apiKey) return;
       socket.emit('user_connected', user.apiKey);
     };
     socket.on('connect', onSocketConnect);

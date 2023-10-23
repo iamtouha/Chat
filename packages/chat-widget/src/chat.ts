@@ -4,15 +4,11 @@ import { baseStyles } from './styles';
 import dayjs from 'dayjs';
 import socket from './socket';
 import { addImageIcon, sendIcon } from './icons';
-import type {
-  Conversation,
-  FileData,
-  Message,
-  ResponsePayload,
-} from '../types';
+import type { Conversation, FileData, Message, ResponsePayload } from './types';
 
 import './user-form';
 import './message-item';
+import { serverUrl } from './variables';
 
 @customElement('chat-component')
 export class ChatComponent extends LitElement {
@@ -21,8 +17,6 @@ export class ChatComponent extends LitElement {
   @state() private _conversationLoading = false;
   @state() private _messages: Message[] = [];
   @state() private _selectedFile: File | null = null;
-
-  _serverUrl = import.meta.env.VITE_APP_SERVER_URL as string;
 
   render() {
     return html`
@@ -137,7 +131,7 @@ export class ChatComponent extends LitElement {
     const formData = new FormData();
     formData.append('file', this._selectedFile as Blob);
     formData.append('apiKey', this.apikey);
-    const response = await fetch(`${this._serverUrl}/api/v1/files/upload`, {
+    const response = await fetch(`${serverUrl}/api/v1/files/upload`, {
       method: 'POST',
       body: formData,
     });
@@ -187,7 +181,7 @@ export class ChatComponent extends LitElement {
     const filedata = this._selectedFile ? await this._uploadFile() : null;
     this._selectedFile = null;
 
-    const response = await fetch(`${this._serverUrl}/api/v1/messages`, {
+    const response = await fetch(`${serverUrl}/api/v1/messages`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -219,7 +213,7 @@ export class ChatComponent extends LitElement {
 
   _createConversation = async (info: { name: string; email: string }) => {
     this._conversationLoading = true;
-    const response = await fetch(`${this._serverUrl}/api/v1/conversations`, {
+    const response = await fetch(`${serverUrl}/api/v1/conversations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...info, apiKey: this.apikey }),
@@ -241,7 +235,7 @@ export class ChatComponent extends LitElement {
   _fetchConversation = async () => {
     if (!this._conversationid) return;
     const response = await fetch(
-      `${this._serverUrl}/api/v1/conversations/${this._conversationid}`,
+      `${serverUrl}/api/v1/conversations/${this._conversationid}`,
     );
 
     if (!response.ok) {
