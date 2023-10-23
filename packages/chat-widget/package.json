@@ -1,11 +1,11 @@
 {
   "name": "@innomarkt/chat-widget",
-  "version": "0.0.2",
-  "private": true,
+  "version": "0.0.1",
   "description": "",
   "main": "build/main.js",
   "types": "build/main.d.ts",
   "type": "module",
+  "access": "public",
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w"
