@@ -111,7 +111,7 @@ export const logout = async (req: Request, res: Response) => {
   await auth.invalidateSession(session.sessionId);
   authRequest.setSession(null);
 
-  return res.status(302).json({
+  return res.status(200).json({
     status: 'success',
     message: 'User logged out successfully',
   });

@@ -68,11 +68,13 @@ export class ChatComponent extends LitElement {
                     `}
                 <p class="filename">${this._selectedFile.name}</p>
               </div>`
-            : html`<input
-                type="text"
-                id="messageBox"
-                placeholder="Type your message..."
-              />`}
+            : null}
+          <input
+            class="message-input ${this._selectedFile?.name ? 'hidden' : ''}"
+            type="text"
+            id="messageBox"
+            placeholder="Type your message..."
+          />
           <button class="send-btn" @click="${this._writeMessage}">
             ${sendIcon}
           </button>
@@ -172,7 +174,7 @@ export class ChatComponent extends LitElement {
       console.error('No conversation id');
       return;
     }
-    if (!messageInput.value && !this._selectedFile) {
+    if (!messageInput?.value && !this._selectedFile) {
       console.error('No message to send');
       return;
     }

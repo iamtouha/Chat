@@ -21,7 +21,9 @@ export const UserButton = () => {
 
   const { mutate: logOut, isLoading } = useMutation(
     ['logout'],
-    async () => await axios.post('/api/v1/auth/logout'),
+    async () => {
+      await axios.post('/api/v1/auth/logout').catch((r) => r);
+    },
     {
       onSuccess: () => {
         setUser(null);
