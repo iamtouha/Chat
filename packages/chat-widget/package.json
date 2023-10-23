@@ -1,6 +1,6 @@
 {
   "name": "@innomarkt/chat-widget",
-  "version": "0.0.1",
+  "version": "0.0.1.1",
   "description": "",
   "main": "build/main.js",
   "types": "build/main.d.ts",
