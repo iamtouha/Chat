@@ -49,6 +49,7 @@ export class UserForm extends LitElement {
     css`
       .form-wrapper {
         padding: 10px;
+        margin-top: 30px;
       }
       .form-wrapper label {
         color: var(--im-foreground);

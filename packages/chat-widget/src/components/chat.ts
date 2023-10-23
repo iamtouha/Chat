@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { baseStyles } from '../lib/styles';
 import dayjs from 'dayjs';
 import socket from '../lib/socket';
-import { addImageIcon, sendIcon } from '../lib/icons';
+import { addImageIcon, closeIcon, fileIcon, sendIcon } from '../lib/icons';
 import type {
   Conversation,
   FileData,
@@ -53,13 +53,26 @@ export class ChatComponent extends LitElement {
             @change="${this._handleFileSelect}"
           />
           <button class="attach-btn" @click=${this._openFileInput}>
-            ${addImageIcon}
+            ${this._selectedFile ? closeIcon : addImageIcon}
           </button>
-          <input
-            type="text"
-            id="messageBox"
-            placeholder="Type your message..."
-          />
+          ${this._selectedFile
+            ? html`<div class="file-preview">
+                ${this._selectedFile.type.startsWith('image/')
+                  ? html`<img
+                      src="${URL.createObjectURL(this._selectedFile)}"
+                    />`
+                  : html`
+                      <span style="width:24px; height:24px; display:block;"
+                        >${fileIcon}</span
+                      >
+                    `}
+                <p class="filename">${this._selectedFile.name}</p>
+              </div>`
+            : html`<input
+                type="text"
+                id="messageBox"
+                placeholder="Type your message..."
+              />`}
           <button class="send-btn" @click="${this._writeMessage}">
             ${sendIcon}
           </button>
@@ -77,6 +90,10 @@ export class ChatComponent extends LitElement {
   };
 
   _openFileInput = () => {
+    if (this._selectedFile) {
+      this._selectedFile = null;
+      return;
+    }
     const fileInput = this.shadowRoot?.getElementById(
       'fileInput',
     ) as HTMLInputElement;
@@ -92,7 +109,6 @@ export class ChatComponent extends LitElement {
     const file = fileInput.files?.[0];
     if (!file || file.size > 1024 * 1024 * 2) return;
     this._selectedFile = file;
-    console.log(file);
     fileInput.value = '';
   };
 
@@ -322,6 +338,21 @@ export class ChatComponent extends LitElement {
       .attach-btn svg {
         width: 21px;
         height: 21px;
+      }
+      .file-preview {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .file-preview img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+        border-radius: var(--im-app-border-radius);
+      }
+      .filename {
+        line-height: 1;
       }
       ::-webkit-scrollbar {
         width: 14px;
