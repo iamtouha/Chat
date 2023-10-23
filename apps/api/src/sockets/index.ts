@@ -5,7 +5,7 @@ import { messagesSocket } from './messages.socket.js';
 const socketIdMap = new Map<string, string>();
 
 export const initializeSocket = (io: Server) => {
-  io.of('/api/v1/socket').on('connection', (socket) => {
+  io.of('/socket.io').on('connection', (socket) => {
     socket.on('user_connected', (id) => {
       console.log('user_connected', id);
       socketIdMap.set(id, socket.id);
