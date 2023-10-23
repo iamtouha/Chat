@@ -121,4 +121,17 @@ router.put('/profileUpdate/:id', async (req, res) => {
   res.send(result);
 });
 
+router.patch('/usersAdmin/:id', async (req, res) => {
+  let id = req.params.id;
+  let filter = { _id: new ObjectId(id) };
+  let updateDoc = {
+    $set: {
+      role: 'admin',
+    },
+  };
+
+  let result = await userCollection.updateOne(filter, updateDoc);
+  res.send(result);
+});
+
 export default router;
