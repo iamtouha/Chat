@@ -4,6 +4,7 @@ node_modules
 
 # testing
 coverage
+src
 
 # misc
 .DS_Store
