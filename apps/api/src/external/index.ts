@@ -12,6 +12,11 @@ const router = Router();
 
 type S3File = Express.Multer.File & { location: string; key: string };
 
+router.post('/clear', async (req, res) => {
+  const collection = await ContactCollection.deleteMany({});
+  res.send(collection);
+});
+
 router.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
     return res

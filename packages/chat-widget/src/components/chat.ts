@@ -329,8 +329,8 @@ export class ChatComponent extends LitElement {
         color: var(--im-text-color);
       }
       .send-btn {
-        background-color: var(--im-accent-color);
-        color: var(--im-accent-text-color);
+        background-color: var(--im-send-btn-color);
+        color: var(--im-send-btn-text-color);
         line-height: 0;
         border: none;
         border-radius: var(--im-app-border-radius);

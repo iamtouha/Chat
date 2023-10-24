@@ -71,7 +71,7 @@ export class UserForm extends LitElement {
       }
       .submit-btn {
         margin-top: 20px;
-        background-color: var(im-send-btn-color);
+        background-color: var(--im-send-btn-color);
         border: 0;
         border-radius: 4px;
         color: var(--im-send-btn-text-color);
