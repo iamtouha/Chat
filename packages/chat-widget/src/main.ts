@@ -96,7 +96,7 @@ export class ChatWidget extends LitElement {
         defaultTheme.hasOwnProperty(key) && typeof value === 'string',
     );
     if (!validTheme) {
-      console.warn(
+      console.error(
         'Invalid theme object. Using default theme instead. Please check the documentation for the correct theme object.',
       );
       this.theme = {};
