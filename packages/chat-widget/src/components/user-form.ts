@@ -22,7 +22,7 @@ export class UserForm extends LitElement {
           <label for="email">Email</label>
           <input type="email" id="email" name="email" />
         </div>
-        <button type="submit">
+        <button class="submit-btn" type="submit">
           ${this.loading ? 'Starting Conversation...' : 'Start Conversation'}
         </button>
       </form>
@@ -51,26 +51,30 @@ export class UserForm extends LitElement {
         padding: 10px;
         margin-top: 30px;
       }
-      .form-wrapper label {
-        color: var(--im-foreground);
-      }
       .form-control {
         margin-bottom: 10px;
         display: flex;
         flex-direction: column;
       }
-      input {
+      .form-control label {
+        color: var(--im-text-color);
+        margin-bottom: 5px;
+        margin-top: 10px;
+      }
+      .form-control input {
         padding: 10px;
         border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: var(--im-secondary);
-        color: var(--im-secondary-foreground);
+        border-radius: var(--im-app-border-radius);
+        border: 1px solid var(--im-muted-text-color);
+        background-color: var(--im-input-color);
+        color: var(--im-input-text-color);
       }
-      button {
-        background-color: var(--im-primary);
+      .submit-btn {
+        margin-top: 20px;
+        background-color: var(im-send-btn-color);
         border: 0;
         border-radius: 4px;
-        color: var(--im-primary-foreground);
+        color: var(--im-send-btn-text-color);
         cursor: pointer;
         font-size: 16px;
         font-weight: bold;

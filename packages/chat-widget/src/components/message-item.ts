@@ -79,16 +79,16 @@ export class MessageItem extends LitElement {
       .message-content {
         padding: 8px 10px;
         border-radius: var(--im-chat-border-radius);
-        background-color: var(--im-secondary);
-        color: var(--im-secondary-foreground);
+        background-color: var(--im-receiveditem-color);
+        color: var(--im-receiveditem-text-color);
       }
       .message-item.sender .message-content {
-        background-color: var(--im-primary);
-        color: var(--im-primary-foreground);
+        background-color: var(--im-sentitem-color);
+        color: var(--im-sentitem-text-color);
       }
       .message-time {
         font-size: 12px;
-        color: var(--im-muted-foreground);
+        color: var(--im-muted-text-color);
         padding-left: 5px;
       }
       .message-item.sender .message-time {
@@ -100,21 +100,26 @@ export class MessageItem extends LitElement {
         max-height: 200px;
         height: 100%;
         border-radius: var(--im-app-border-radius);
-        border: 1px solid var(--im-secondary);
+        border: 1px solid var(--im-muted-text-color);
       }
+
       .download-btn {
         margin-left: 10px;
-        color: var(--im-foreground);
         text-decoration: none;
+        color: var(--im-receiveditem-text-color);
       }
       .sender .download-btn {
-        margin-left: 10px;
-        color: var(--im-primary-foreground);
-        text-decoration: none;
+        color: var(--im-sentitem-text-color);
       }
       .download-btn svg {
         width: 16px;
         height: 16px;
+      }
+      @media (min-width: 760px) {
+        .full .received-img {
+          max-width: 350px;
+          max-height: 350px;
+        }
       }
     `,
   ];

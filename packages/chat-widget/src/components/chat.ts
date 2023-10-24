@@ -243,7 +243,6 @@ export class ChatComponent extends LitElement {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...info, apiKey: this.apikey }),
     });
-    console.log({ ...info, apiKey: this.apikey });
     if (!response.ok) {
       this._conversationLoading = false;
       return;
@@ -280,9 +279,10 @@ export class ChatComponent extends LitElement {
       .chat-wrapper {
         position: relative;
         width: 100%;
-        height: 100%;
+        height: calc(100% - 50px);
         display: grid;
-        grid-template-rows: 1fr 60px;
+        grid-template-rows: 1fr 55px;
+        color: var(--im-text-color);
       }
       .chat-messages {
         overflow-y: auto;
@@ -298,27 +298,27 @@ export class ChatComponent extends LitElement {
         gap: 5px;
       }
       .chat-input {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
         display: flex;
         align-items: center;
         padding: 10px;
-        background-color: var(--im-secondary);
-        color: var(--im-secondary-foreground);
+        background-color: var(--im-primary-color);
+        color: var(--im-primary-text-color);
+        box-shadow: 0 -4px 4px rgba(0, 0, 0, 0.1);
+      }
+      .chat-input.hidden {
+        display: none;
       }
       .chat-input input {
         flex: 1;
         padding: 8px;
-        border: 1px solid var(--im-muted-foreground);
+        border: 1px solid var(--im-muted-text-color);
         border-radius: var(--im-app-border-radius);
-        background-color: var(--im-background);
-        color: var(--im-foreground);
+        background-color: var(--im-background-color);
+        color: var(--im-text-color);
       }
       .send-btn {
-        background-color: var(--im-accent);
-        color: var(--im-accent-foreground);
+        background-color: var(--im-accent-color);
+        color: var(--im-accent-text-color);
         line-height: 0;
         border: none;
         border-radius: var(--im-app-border-radius);
@@ -332,8 +332,8 @@ export class ChatComponent extends LitElement {
       }
       .attach-btn {
         border: none;
-        color: var(--im-secondary-foreground);
-        background-color: var(--im-secondary);
+        background-color: transparent;
+        color: var(--im-primary-text-color);
         border-radius: var(--im-app-border-radius);
         line-height: 0;
         padding: 8px;
@@ -358,15 +358,16 @@ export class ChatComponent extends LitElement {
       }
       .filename {
         line-height: 1;
+        font-size: small;
       }
       ::-webkit-scrollbar {
-        width: 14px;
+        width: 12px;
       }
       ::-webkit-scrollbar-thumb {
         border: 4px solid rgba(0, 0, 0, 0);
         background-clip: padding-box;
         border-radius: 9999px;
-        background-color: var(--im-primary);
+        background-color: var(--im-muted-text-color);
       }
     `,
   ];

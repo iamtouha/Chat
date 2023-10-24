@@ -254,6 +254,9 @@ importers:
 
   packages/chat-widget:
     dependencies:
+      '@lit/react':
+        specifier: ^1.0.0
+        version: 1.0.0(@types/react@18.2.24)
       dayjs:
         specifier: ^1.11.9
         version: 1.11.10
@@ -1418,6 +1421,14 @@ packages:
 
   /@lit-labs/ssr-dom-shim@1.1.1:
     resolution: {integrity: sha512-kXOeFbfCm4fFf2A3WwVEeQj55tMZa8c8/f9AKHMobQMkzNUfUj+antR3fRPaZJawsa1aZiP/Da3ndpZrwEe4rQ==}
+    dev: false
+
+  /@lit/react@1.0.0(@types/react@18.2.24):
+    resolution: {integrity: sha512-uTuU6vpxtZvCWxcu3GNosckP2JpFWZpMKjhwQ42Bzu/OU9kjStJspA04o7RadecQfx0YiFIImX3qek15BXhaWQ==}
+    peerDependencies:
+      '@types/react': 17 || 18
+    dependencies:
+      '@types/react': 18.2.24
     dev: false
 
   /@lit/reactive-element@1.6.3:

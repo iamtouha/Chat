@@ -19,6 +19,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@lit/react": "^1.0.0",
     "dayjs": "^1.11.9",
     "lit": "^2.7.6",
     "socket.io-client": "^4.7.2"

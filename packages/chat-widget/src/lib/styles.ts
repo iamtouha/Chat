@@ -4,7 +4,7 @@ export const baseStyles = css`
   :host {
     box-sizing: border-box;
     font-family: sans-serif;
-    color: var(--im-foreground);
+    color: var(--im-text-color);
   }
   * {
     box-sizing: border-box;

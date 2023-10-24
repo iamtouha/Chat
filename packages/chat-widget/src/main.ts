@@ -5,29 +5,44 @@ import { chatIcon, closeIcon, expandIcon, shrinkIcon } from './lib/icons';
 
 import './components/chat';
 
+const defaultTheme = {
+  'background-color': 'hsl(0 0% 100%)',
+  'text-color': 'hsl(222.2 84% 4.9%)',
+
+  'primary-color': 'hsl(210 40% 96.1%)',
+  'primary-text-color': 'hsl(222 47.4% 11.2%)',
+
+  'fab-color': 'hsl(222.2 47.4% 11.2%)',
+  'fab-text-color': 'hsl(210 40% 98%)',
+
+  'sentitem-color': 'hsl(222.2 47.4% 11.2%)',
+  'sentitem-text-color': 'hsl(0 0% 100%)',
+
+  'receiveditem-color': 'hsl(210 40% 96.1%)',
+  'receiveditem-text-color': 'hsl(222 47.4% 11.2%)',
+
+  'send-btn-color': 'hsl(222.2 47.4% 11.2%)',
+  'send-btn-text-color': 'hsl(210 40% 96.1%)',
+
+  'muted-text-color': 'hsl(215.4 16.3% 46.9%)',
+
+  'app-border-radius': '5px',
+  'chat-border-radius': '10px',
+};
+
 @customElement('chat-widget')
 export class ChatWidget extends LitElement {
-  @property({ type: Boolean }) open = false;
-  @property({ type: Boolean }) fullscreen = false;
+  @property({ type: Boolean, reflect: true }) open = false;
+  @property({ type: Boolean, reflect: true }) fullscreen = false;
   @property({ type: String }) chatTitle = 'Chat';
   @property({ type: String }) apikey = '';
 
   /** Theme properties */
-  @property({ type: String }) backgroundColor = 'hsl(0 0% 100%)';
-  @property({ type: String }) foregroundColor = 'hsl(222.2 84% 4.9%)';
-  @property({ type: String }) primaryColor = 'hsl(222.2 47.4% 11.2%)';
-  @property({ type: String }) primaryForegroundColor = 'hsl(210 40% 98%)';
-  @property({ type: String }) secondaryColor = 'hsl(210 40% 96.1%)';
-  @property({ type: String }) secondaryForegroundColor = 'hsl(222 47.4% 11.2%)';
-  @property({ type: String }) accentColor = 'hsl(222.2 47.4% 11.2%)';
-  @property({ type: String }) accentForegroundColor = 'hsl(210 40% 96.1%)';
-  @property({ type: String }) mutedColor = 'hsl(210 40% 96.1%)';
-  @property({ type: String }) mutedForegroundColor = 'hsl(215.4 16.3% 46.9%)';
-  @property({ type: String }) appBorderRadius = '5px';
-  @property({ type: String }) chatBorderRadius = '10px';
+  @property({ type: Object }) theme = {};
 
   render() {
-    return html`<button
+    return html`
+      <button
         class="toggle-fab ${this.open ? 'open' : ''} ${this.fullscreen
           ? 'hidden'
           : ''}"
@@ -38,46 +53,46 @@ export class ChatWidget extends LitElement {
       <div
         class="box ${this.open ? 'open' : ''} ${this.fullscreen ? 'full' : ''}"
       >
-        <div class="header">
-          <h3>${this.chatTitle}</h3>
-          <div>
-            <button
-              class="full-close-btn ${this.fullscreen ? '' : 'hidden'}"
-              @click=${this._toggleChat}
-            >
-              ${closeIcon}
-            </button>
-            <button class="resize-btn" @click=${this._expandChat}>
-              ${this.fullscreen ? shrinkIcon : expandIcon}
-            </button>
-          </div>
-        </div>
         <div class="app-wrapper">
+          <div class="header">
+            <h3>${this.chatTitle}</h3>
+            <div>
+              <button
+                class="full-close-btn ${this.fullscreen ? '' : 'hidden'}"
+                @click=${this._toggleChat}
+              >
+                ${closeIcon}
+              </button>
+              <button class="resize-btn" @click=${this._expandChat}>
+                ${this.fullscreen ? shrinkIcon : expandIcon}
+              </button>
+            </div>
+          </div>
           <chat-component apikey="${this.apikey}" />
         </div>
-      </div>`;
+      </div>
+    `;
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    const theme = {
-      background: this.backgroundColor,
-      foreground: this.foregroundColor,
-      primary: this.primaryColor,
-      secondary: this.secondaryColor,
-      accent: this.accentColor,
-      muted: this.mutedColor,
-      'primary-foreground': this.primaryForegroundColor,
-      'secondary-foreground': this.secondaryForegroundColor,
-      'accent-foreground': this.accentForegroundColor,
-      'muted-foreground': this.mutedForegroundColor,
-      'app-border-radius': this.appBorderRadius,
-      'chat-border-radius': this.chatBorderRadius,
-    };
+    const validTheme = Object.entries(this.theme).every(
+      ([key, value]) =>
+        defaultTheme.hasOwnProperty(key) && typeof value === 'string',
+    );
+    if (!validTheme) {
+      console.warn(
+        'Invalid theme object. Using default theme instead. Please check the documentation for the correct theme object.',
+      );
+      this.theme = {};
+    }
 
-    Object.entries(theme).forEach(([key, value]) => {
-      const el = this.shadowRoot?.host as HTMLElement;
+    const combinedTheme = { ...defaultTheme, ...this.theme };
+
+    const el = this.shadowRoot?.host as HTMLElement;
+
+    Object.entries(combinedTheme).forEach(([key, value]) => {
       el?.style.setProperty(`--im-${key}`, value);
     });
   }
@@ -95,6 +110,9 @@ export class ChatWidget extends LitElement {
   static styles = [
     baseStyles,
     css`
+      .# {
+        display: contents;
+      }
       .toggle-fab {
         position: fixed;
         bottom: 20px;
@@ -103,14 +121,15 @@ export class ChatWidget extends LitElement {
         height: 50px;
         line-height: 0;
         border-radius: 50%;
-        background-color: var(--im-primary);
-        color: var(--im-primary-foreground);
+        background-color: var(--im-fab-color);
+        color: var(--im-fab-text-color);
         border: none;
         outline: none;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         cursor: pointer;
         transition: all 0.3s ease-in-out;
         z-index: 9999;
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
       }
       .toggle-fab svg {
         width: 30px;
@@ -124,19 +143,18 @@ export class ChatWidget extends LitElement {
         align-items: center;
         justify-content: space-between;
         padding: 10px;
-        background-color: var(--im-primary);
-        color: var(--im-primary-foreground);
+        background-color: var(--im-primary-color);
+        color: var(--im-primary-text-color);
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
       }
       .box {
-        background-color: var(--im-background);
-        border-radius: var(--im-app-border-radius);
+        background-color: var(--im-muted-text-color);
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         position: fixed;
         right: 20px;
         bottom: 70px;
         width: 330px;
         height: 450px;
-        overflow: hidden;
         opacity: 0;
         transform: translateY(40px);
         transition: all 0.3s ease-in-out;
@@ -160,7 +178,7 @@ export class ChatWidget extends LitElement {
         line-height: 0;
         border: none;
         background-color: transparent;
-        color: var(--im-primary-foreground);
+        color: var(--im-primary-text-color);
         cursor: pointer;
         padding: 5px;
       }
@@ -170,10 +188,13 @@ export class ChatWidget extends LitElement {
         height: 20px;
       }
       .app-wrapper {
-        height: calc(100% - 50px);
         max-width: 1000px;
         width: 100%;
+        height: 100%;
         margin: 0 auto;
+        overflow: hidden;
+        background-color: var(--im-background-color);
+        border-radius: var(--im-app-border-radius);
       }
     `,
   ];
