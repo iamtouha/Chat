@@ -1,2 +1,2 @@
-export const serverUrl = 'http://chat.innomarktconsultancy.com';
-export const socketUrl = 'http://chat.innomarktconsultancy.com/socket.io';
+export const serverUrl = 'https://chat.innomarktconsultancy.com';
+export const socketUrl = 'https://chat.innomarktconsultancy.com/socket.io';
