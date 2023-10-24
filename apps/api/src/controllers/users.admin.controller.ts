@@ -158,12 +158,6 @@ export const updateUserFromId = async (req: Request, res: Response) => {
     });
   }
 
-  if (req.user?.role === 'ADMIN') {
-    return res.status(403).json({
-      status: 'error',
-      message: "you're not authrized to perform this action",
-    });
-  }
   try {
     const existingUser = await auth.getUser(req.params.id);
     if (result.data.password) {

@@ -1,7 +1,14 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { baseStyles } from './lib/styles';
-import { chatIcon, closeIcon, expandIcon, shrinkIcon } from './lib/icons';
+import {
+  chatIcon,
+  closeIcon,
+  expandIcon,
+  shrinkIcon,
+  soundOffIcon,
+  soundOnIcon,
+} from './lib/icons';
 
 import './components/chat';
 
@@ -25,6 +32,7 @@ const defaultTheme = {
   'send-btn-text-color': 'hsl(210 40% 96.1%)',
 
   'muted-text-color': 'hsl(215.4 16.3% 46.9%)',
+  'overflow-screen-color': 'hsl(215.4 16.3% 46.9%)',
 
   'app-border-radius': '5px',
   'chat-border-radius': '10px',
@@ -34,10 +42,10 @@ const defaultTheme = {
 export class ChatWidget extends LitElement {
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Boolean, reflect: true }) fullscreen = false;
+  @property({ type: Boolean, reflect: true }) muted = false;
   @property({ type: String }) chatTitle = 'Chat';
   @property({ type: String }) apikey = '';
 
-  /** Theme properties */
   @property({ type: Object }) theme = {};
 
   render() {
@@ -58,6 +66,12 @@ export class ChatWidget extends LitElement {
             <h3>${this.chatTitle}</h3>
             <div>
               <button
+                class="mute-btn"
+                @click=${() => (this.muted = !this.muted)}
+              >
+                ${this.muted ? soundOffIcon : soundOnIcon}
+              </button>
+              <button
                 class="full-close-btn ${this.fullscreen ? '' : 'hidden'}"
                 @click=${this._toggleChat}
               >
@@ -68,7 +82,7 @@ export class ChatWidget extends LitElement {
               </button>
             </div>
           </div>
-          <chat-component apikey="${this.apikey}" />
+          <chat-component apikey="${this.apikey}" ?muted="${this.muted}" />
         </div>
       </div>
     `;
@@ -148,7 +162,6 @@ export class ChatWidget extends LitElement {
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
       }
       .box {
-        background-color: var(--im-muted-text-color);
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         position: fixed;
         right: 20px;
@@ -167,12 +180,14 @@ export class ChatWidget extends LitElement {
         border-radius: 0;
         bottom: 0;
         right: 0;
+        background-color: var(--im-overflow-screen-color);
       }
       .box.open {
         opacity: 1;
         transform: translateY(0);
         visibility: visible;
       }
+      .mute-btn,
       .full-close-btn,
       .resize-btn {
         line-height: 0;
@@ -182,6 +197,7 @@ export class ChatWidget extends LitElement {
         cursor: pointer;
         padding: 5px;
       }
+      .mute-btn svg,
       .full-close-btn svg,
       .resize-btn svg {
         width: 20px;

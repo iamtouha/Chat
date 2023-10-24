@@ -10,14 +10,15 @@ import type {
   Message,
   ResponsePayload,
 } from '../types';
+import { serverUrl } from '../variables';
 
 import './user-form';
 import './message-item';
-import { serverUrl } from '../variables';
 
 @customElement('chat-component')
 export class ChatComponent extends LitElement {
   @property({ type: String }) apikey = '';
+  @property({ type: Boolean, reflect: true }) muted = false;
   @state() private _conversationid = '';
   @state() private _conversationLoading = false;
   @state() private _messages: Message[] = [];
@@ -80,6 +81,9 @@ export class ChatComponent extends LitElement {
           </button>
         </div>
       </div>
+      <audio id="alertAudio" class="hidden">
+        <source src="${serverUrl}/assets/ding.m4a" />
+      </audio>
     `;
   }
 
@@ -122,6 +126,11 @@ export class ChatComponent extends LitElement {
       socket.emit('user_connected', this._conversationid);
       socket.on('message_received', (message: Message) => {
         this._messages = [message, ...this._messages];
+        if (this.muted) return;
+        const audio = this.shadowRoot?.getElementById(
+          'alertAudio',
+        ) as HTMLAudioElement;
+        audio?.play();
       });
       socket.on('message_updated', (message: Message, localId: string) => {
         this._messages = this._messages.map((msg) =>
@@ -283,6 +292,7 @@ export class ChatComponent extends LitElement {
         display: grid;
         grid-template-rows: 1fr 55px;
         color: var(--im-text-color);
+        container-type: inline-size;
       }
       .chat-messages {
         overflow-y: auto;
@@ -298,7 +308,9 @@ export class ChatComponent extends LitElement {
         gap: 5px;
       }
       .chat-input {
+        max-width: 100%;
         display: flex;
+        flex-wrap: nowrap;
         align-items: center;
         padding: 10px;
         background-color: var(--im-primary-color);
@@ -359,6 +371,11 @@ export class ChatComponent extends LitElement {
       .filename {
         line-height: 1;
         font-size: small;
+        width: 185px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
       }
       ::-webkit-scrollbar {
         width: 12px;
@@ -368,6 +385,11 @@ export class ChatComponent extends LitElement {
         background-clip: padding-box;
         border-radius: 9999px;
         background-color: var(--im-muted-text-color);
+      }
+      @container (min-width: 600px) {
+        .filename {
+          width: calc(100% - 140px);
+        }
       }
     `,
   ];

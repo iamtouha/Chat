@@ -96,8 +96,8 @@ export class MessageItem extends LitElement {
         padding-right: 5px;
       }
       .received-img {
-        max-width: 200px;
-        max-height: 200px;
+        max-width: 250px;
+        max-height: 250px;
         height: 100%;
         border-radius: var(--im-app-border-radius);
         border: 1px solid var(--im-muted-text-color);
@@ -115,8 +115,8 @@ export class MessageItem extends LitElement {
         width: 16px;
         height: 16px;
       }
-      @media (min-width: 760px) {
-        .full .received-img {
+      @container (min-width: 600px) {
+        .received-img {
           max-width: 350px;
           max-height: 350px;
         }

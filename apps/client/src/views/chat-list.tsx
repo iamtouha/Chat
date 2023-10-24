@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import axios from '@/lib/axios';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ import { Icons } from '@/components/icons';
 import socket from '@/socket';
 import { cn, timeDifference, useQueryparams } from '@/lib/utils';
 import type { Conversation, Message, ResponsePayload } from '@/types';
+import { useAlertStore } from '@/store/alertStore';
 
 export const ResponsiveChatList = ({ onSidebar }: { onSidebar?: boolean }) => {
   return onSidebar ? (
@@ -38,6 +39,8 @@ const ChatList = () => {
   const [conversations, setConversations] = useState<
     (Conversation & { messages: Message[] })[]
   >([]);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const messageAlert = useAlertStore((state) => state.alert);
 
   useQuery(
     ['chats'],
@@ -81,6 +84,9 @@ const ChatList = () => {
       if (conv) {
         conv.messages.unshift(message);
       }
+      if (messageAlert) {
+        audioRef.current?.play();
+      }
       setConversations([...conversations]);
     };
     socket.on('message_received', onMessageReceived);
@@ -89,7 +95,7 @@ const ChatList = () => {
       socket.off('conversation_started', onConversationStarted);
       socket.off('message_received', onMessageReceived);
     };
-  }, [conversations]);
+  }, [conversations, messageAlert]);
 
   const getSummary = (message: Message) => {
     let str = message.type === 'INBOUND' ? 'You : ' : '';
@@ -141,6 +147,11 @@ const ChatList = () => {
             chatId={conversation.id}
           />
         ))}
+      </div>
+      <div>
+        <audio ref={audioRef} className="hidden">
+          <source src="/assets/ding.m4a" />
+        </audio>
       </div>
     </>
   );

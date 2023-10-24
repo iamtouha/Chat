@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {
   getProfile,
   makeInitialAdmin,
-  updateProfile,
+  updateAccount,
+  updatePassword,
 } from '../controllers/users.controller.js';
 import {
   makeAdmin,
@@ -20,7 +21,8 @@ const usersRouter: Router = Router();
 
 usersRouter.get('/profile', getProfile);
 usersRouter.post('/make-admin', makeInitialAdmin);
-usersRouter.put('/update', updateProfile);
+usersRouter.put('/update', updateAccount);
+usersRouter.put('/update-password', updatePassword);
 
 /**
  * Admin routes

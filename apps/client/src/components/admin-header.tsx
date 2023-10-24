@@ -9,7 +9,9 @@ export function AdminHeader() {
       <div className="flex gap-2 px-4 py-2 md:gap-6">
         <div className="flex items-center gap-2">
           <Link to="/admin" aria-label="Innomarkt home">
-            <h2 className="text-2xl font-bold">Innomarkt Admin</h2>
+            <h2 className="text-xl lg:text-2xl font-bold">
+              Innomarkt Chat Admin
+            </h2>
           </Link>
         </div>
         <div className="ml-0 mr-auto"></div>

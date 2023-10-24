@@ -1,2 +1,2 @@
-export const serverUrl = 'http://localhost:3000';
-export const socketUrl = 'http://localhost:3000/socket.io';
+export const serverUrl = 'http://chat.innomarktconsultancy.com';
+export const socketUrl = 'http://chat.innomarktconsultancy.com/socket.io';

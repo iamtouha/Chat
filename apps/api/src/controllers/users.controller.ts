@@ -1,6 +1,9 @@
 import type { Request, Response } from 'express';
 import { getUser } from '../providers/users.provider.js';
-import { updateUserSchema } from '../validators/auth.validator.js';
+import {
+  updatePasswordSchema,
+  updateAccountSchema,
+} from '../validators/auth.validator.js';
 import { getExceptionType, parseZodError } from '../lib/helpers.js';
 import { auth } from '../lib/lucia.js';
 
@@ -60,8 +63,8 @@ export const makeInitialAdmin = async (req: Request, res: Response) => {
   });
 };
 
-export const updateProfile = async (req: Request, res: Response) => {
-  const result = updateUserSchema.safeParse(req.body);
+export const updateAccount = async (req: Request, res: Response) => {
+  const result = updateAccountSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({
       status: 'error',
@@ -72,31 +75,62 @@ export const updateProfile = async (req: Request, res: Response) => {
   if (!req.user) return;
 
   try {
-    if (result.data.password) {
-      await auth.updateKeyPassword(
-        'username',
-        req.user.username,
-        result.data.password,
-      );
-      await auth.invalidateAllUserSessions(req.user.userId);
-      const session = await auth.createSession({
-        userId: req.user.userId,
-        attributes: {},
-      });
-      const authRequest = auth.handleRequest(req, res);
-      authRequest.setSession(session);
-    }
-    if (result.data.email) {
-      await auth.updateUserAttributes(req.user.userId, {
-        email: result.data.email,
-      });
-    }
+    await auth.updateUserAttributes(req.user.userId, {
+      email: result.data.email,
+    });
+
     return res.status(200).json({
       status: 'success',
       message: 'User updated successfully',
     });
   } catch (error) {
     const { type, status, message } = getExceptionType(error);
+    return res.status(status).json({
+      status: 'error',
+      message,
+      type,
+    });
+  }
+};
+
+export const updatePassword = async (req: Request, res: Response) => {
+  const result = updatePasswordSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Invalid request payload',
+      result: parseZodError(result.error),
+    });
+  }
+  if (!req.user) return;
+
+  const { username, userId } = req.user;
+
+  try {
+    await auth.useKey('username', username, result.data.currentPassword);
+
+    await auth.updateKeyPassword('username', username, result.data.newPassword);
+    await auth.invalidateAllUserSessions(userId);
+    const session = await auth.createSession({
+      userId: userId,
+      attributes: {},
+    });
+    const authRequest = auth.handleRequest(req, res);
+    authRequest.setSession(session);
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'User updated successfully',
+    });
+  } catch (error) {
+    const { type, status, message } = getExceptionType(error);
+    if (type === 'InvalidCredentialException') {
+      return res.status(status).json({
+        status: 'error',
+        message: 'Incorrect current password given',
+        type,
+      });
+    }
     return res.status(status).json({
       status: 'error',
       message,

@@ -23,7 +23,7 @@ export const getExceptionType = (error: unknown) => {
         return {
           type: 'UniqueConstraintViolationException',
           status: 400,
-          message: `user with given ${target?.join?.(', ')} already exists.`,
+          message: `user with given username/email already exists.`,
         };
 
       default:

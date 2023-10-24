@@ -8,7 +8,7 @@ export const HomeView = () => {
 
   if (!user?.active) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-[calc(100vh-80px)]">
         <div>
           <Icons.warning className="w-20 h-20 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl text-center">
