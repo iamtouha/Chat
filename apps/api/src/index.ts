@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { server, io } from './server.js';
-import { initializeSocket } from './sockets/index.js';
+import { initializeSocket } from './sockets/_main.js';
 import type { User } from 'lucia';
 
 const port = parseInt(process.env.PORT ?? '') || 3000;

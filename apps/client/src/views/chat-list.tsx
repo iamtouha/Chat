@@ -17,6 +17,7 @@ import socket from '@/socket';
 import { cn, timeDifference, useQueryparams } from '@/lib/utils';
 import type { Conversation, Message, ResponsePayload } from '@/types';
 import { useAlertStore } from '@/store/alertStore';
+import { useSocketStore } from '@/store/socketStore';
 
 export const ResponsiveChatList = ({ onSidebar }: { onSidebar?: boolean }) => {
   return onSidebar ? (
@@ -41,6 +42,19 @@ const ChatList = () => {
   >([]);
   const audioRef = useRef<HTMLAudioElement>(null);
   const messageAlert = useAlertStore((state) => state.alert);
+  const socketConnected = useSocketStore((state) => state.connected);
+  const activeConversations = useSocketStore(
+    (state) => state.activeConversations,
+  );
+  const setActiveConversations = useSocketStore(
+    (state) => state.setActiveConversations,
+  );
+  const addActiveConversation = useSocketStore(
+    (state) => state.addActiveConversation,
+  );
+  const removeActiveConversation = useSocketStore(
+    (state) => state.removeActiveConversation,
+  );
 
   useQuery(
     ['chats'],
@@ -74,6 +88,7 @@ const ChatList = () => {
   }, [conversations, searchText]);
 
   useEffect(() => {
+    if (!socketConnected) return;
     const onConversationStarted = (
       data: Conversation & { messages: Message[] },
     ) => {
@@ -89,13 +104,38 @@ const ChatList = () => {
       }
       setConversations([...conversations]);
     };
+    const onJoinConversations = (data: string[]) => {
+      setActiveConversations(data);
+    };
+    const onJoinConversation = (data: string) => {
+      addActiveConversation(data);
+    };
+    const onLeaveConversation = (data: string) => {
+      removeActiveConversation(data);
+    };
+
     socket.on('message_received', onMessageReceived);
     socket.on('conversation_started', onConversationStarted);
+
+    socket.on('joined_conversations', onJoinConversations);
+    socket.on('joined_conversation', onJoinConversation);
+    socket.on('left_conversation', onLeaveConversation);
+
     return () => {
       socket.off('conversation_started', onConversationStarted);
       socket.off('message_received', onMessageReceived);
+      socket.off('joined_conversations', onJoinConversations);
+      socket.off('joined_conversation', onJoinConversation);
+      socket.on('left_conversation', onLeaveConversation);
     };
-  }, [conversations, messageAlert]);
+  }, [
+    conversations,
+    messageAlert,
+    socketConnected,
+    addActiveConversation,
+    removeActiveConversation,
+    setActiveConversations,
+  ]);
 
   const getSummary = (message: Message) => {
     let str = message.type === 'INBOUND' ? 'You : ' : '';
@@ -142,8 +182,9 @@ const ChatList = () => {
                 ? getSummary(conversation.messages[0])
                 : 'started a conversation'
             }
-            seen={true}
+            seen={conversation.messages[0]?.seen ?? false}
             time={conversation.messages[0]?.createdAt ?? conversation.createdAt}
+            active={activeConversations.includes(conversation.id)}
             chatId={conversation.id}
           />
         ))}

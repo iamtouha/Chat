@@ -123,7 +123,7 @@ export class ChatComponent extends LitElement {
 
     if (name === '_conversationid' && this._conversationid) {
       this._fetchConversation();
-      socket.emit('user_connected', this._conversationid);
+      socket.emit('user_connected', this._conversationid, this.apikey);
       socket.on('message_received', (message: Message) => {
         this._messages = [message, ...this._messages];
         if (this.muted) return;

@@ -43,7 +43,7 @@ export class ChatWidget extends LitElement {
   @property({ type: Boolean, reflect: true }) open = false;
   @property({ type: Boolean, reflect: true }) fullscreen = false;
   @property({ type: Boolean, reflect: true }) muted = false;
-  @property({ type: String }) chatTitle = 'Chat';
+  @property({ type: String }) headertitle = 'Chat';
   @property({ type: String }) apikey = '';
 
   @property({ type: Object }) theme = {};
@@ -63,7 +63,7 @@ export class ChatWidget extends LitElement {
       >
         <div class="app-wrapper">
           <div class="header">
-            <h3>${this.chatTitle}</h3>
+            <h3>${this.headertitle}</h3>
             <div>
               <button
                 class="mute-btn"

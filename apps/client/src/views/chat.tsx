@@ -27,6 +27,7 @@ import socket from '@/socket';
 import { toast } from 'react-toastify';
 import { FileCard } from '@/components/file-card';
 import { useUserStore } from '@/store/userStore';
+import { useSocketStore } from '@/store/socketStore';
 
 const ALLOWED_EXTENSIONS = ['png', 'jpeg', 'pdf', 'docx', 'csv', 'xlsm'];
 
@@ -37,6 +38,7 @@ export const ChatPage = () => {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const isActive = useSocketStore((state) => state.isConversationActive);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,6 +50,16 @@ export const ChatPage = () => {
     }
     setSelectedFile(file);
   };
+  const { mutate: makeSeen } = useMutation(
+    ['seen-message', messages[0]?.id],
+    async (id: string) => {
+      const res = await axios.put(`/api/v1/messages/${id}/seen`);
+      if (res.data.status !== 'success') {
+        throw new Error(res.data.message);
+      }
+      return res.data.result;
+    },
+  );
 
   const { data: conversation, isLoading } = useQuery(
     ['conversation', params.get('id')],
@@ -174,6 +186,12 @@ export const ChatPage = () => {
       socket.off('message_updated', onMessageUpdated);
     };
   }, [conversation?.id]);
+  React.useEffect(() => {
+    if (!messages.length) return;
+    const { local, seen, id } = messages[0];
+    if (local || seen) return;
+    makeSeen(id);
+  }, [messages, makeSeen]);
 
   const lastActive = React.useMemo(() => {
     if (!conversation?.createdAt) return null;
@@ -198,7 +216,9 @@ export const ChatPage = () => {
               <div className="flex-auto">
                 <CardTitle className="text-lg">{conversation.name}</CardTitle>
                 <CardDescription className="text-xs">
-                  Active {lastActive}
+                  {isActive(conversation.id)
+                    ? 'Active now'
+                    : `Active ${lastActive}`}
                 </CardDescription>
               </div>
               <div className="flex-initial xl:hidden">

@@ -50,6 +50,8 @@ export class UserForm extends LitElement {
       .form-wrapper {
         padding: 10px;
         margin-top: 30px;
+        max-width: 400px;
+        margin-inline: auto;
       }
       .form-control {
         margin-bottom: 10px;

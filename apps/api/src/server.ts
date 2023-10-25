@@ -7,7 +7,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import router from './router/index.js';
+import router from './router/_main.js';
 import externalRouter from './external/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
