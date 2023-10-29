@@ -242,7 +242,7 @@ export class ChatComponent extends LitElement {
     this._messages = this._messages.map((message) =>
       message.id === localId ? data.result : message,
     );
-    socket.emit('message_update_sent', data.result, this.apikey, localId);
+    socket.emit('message_update_sent', data.result, localId);
   };
 
   _createConversation = async (info: { name: string; email: string }) => {

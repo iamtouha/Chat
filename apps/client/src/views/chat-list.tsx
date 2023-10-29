@@ -37,6 +37,7 @@ export const ResponsiveChatList = ({ onSidebar }: { onSidebar?: boolean }) => {
 
 const ChatList = () => {
   const [searchText, setSearchText] = useState('');
+  const params = useQueryparams();
   const [conversations, setConversations] = useState<
     (Conversation & { messages: Message[] })[]
   >([]);
@@ -136,6 +137,21 @@ const ChatList = () => {
     removeActiveConversation,
     setActiveConversations,
   ]);
+
+  useEffect(() => {
+    const currentId = params.get('id');
+
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === currentId
+          ? {
+              ...conv,
+              messages: conv.messages.map((msg) => ({ ...msg, seen: true })),
+            }
+          : conv,
+      ),
+    );
+  }, [params]);
 
   const getSummary = (message: Message) => {
     let str = message.type === 'INBOUND' ? 'You : ' : '';

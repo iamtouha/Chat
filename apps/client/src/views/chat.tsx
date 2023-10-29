@@ -159,7 +159,7 @@ export const ChatPage = () => {
         setText('');
       },
       onSuccess: (data, { key }) => {
-        socket.emit('message_update_sent', data, conversation?.id, key);
+        socket.emit('message_update_sent', data, key);
         setMessages((prev) =>
           prev.map((message) => (message.id === key ? data : message)),
         );

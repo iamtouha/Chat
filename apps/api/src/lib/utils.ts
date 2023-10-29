@@ -47,7 +47,7 @@ export const getExceptionType = (error: unknown) => {
   return UnknownException;
 };
 
-export function getMapKeysByValue<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
+export function getMapKeys<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
   const keys: T[] = [];
   for (const [key, value] of map) {
     if (cb(value)) {
@@ -57,7 +57,7 @@ export function getMapKeysByValue<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
   return keys;
 }
 
-export function getMapKeyByValue<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
+export function getMapKey<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
   for (const [key, value] of map) {
     if (cb(value)) return key;
   }

@@ -1,23 +1,33 @@
 import { Socket } from 'socket.io';
+import type { SocketIdMap } from './_main.js';
+import { getMapKey } from '../lib/utils.js';
 
-export const messagesSocket = (
-  socket: Socket,
-  socketIdMap: Map<string, string>,
-) => {
-  socket.on('message_sent', (payload, receiverId: string) => {
-    const clientSocketId = socketIdMap.get(receiverId);
+export const messagesSocket = (socket: Socket, socketIdMap: SocketIdMap) => {
+  socket.on('message_sent', (payload) => {
+    const { apikey } = socketIdMap.get(socket.id) || {};
 
-    if (!clientSocketId) return;
-
-    socket.to(clientSocketId).emit('message_received', payload);
+    if (apikey) {
+      socket.to(apikey).emit('message_received', payload);
+      return;
+    }
+    const convId = payload.conversationId as string | undefined;
+    const receiverSocketId = getMapKey(socketIdMap, (v) => v.id === convId);
+    if (!receiverSocketId) return;
+    socket.to(receiverSocketId).emit('message_received', payload);
   });
 
-  socket.on(
-    'message_update_sent',
-    (payload, receiverId: string, key: string) => {
-      const clientSocketId = socketIdMap.get(receiverId);
-      if (!clientSocketId) return;
-      socket.to(clientSocketId).emit('message_updated', payload, key);
-    },
-  );
+  socket.on('message_update_sent', (payload, key: string) => {
+    const { apikey } = socketIdMap.get(socket.id) || {};
+
+    if (apikey) {
+      socket.to(apikey).emit('message_updated', payload, key);
+      return;
+    }
+
+    const convId = payload.conversationId as string | undefined;
+    const receiverSocketId = getMapKey(socketIdMap, (v) => v.id === convId);
+
+    if (!receiverSocketId) return;
+    socket.to(receiverSocketId).emit('message_updated', payload, key);
+  });
 };

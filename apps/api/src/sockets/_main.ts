@@ -1,38 +1,33 @@
 import { Server } from 'socket.io';
 import { conversationsSocket } from './conversations.socket.js';
 import { messagesSocket } from './messages.socket.js';
-import { getMapKeyByValue, getMapKeysByValue } from '../lib/helpers.js';
+import { getMapKey, getMapKeys } from '../lib/utils.js';
 
-const socketIdMap = new Map<string, string>();
-const apikeyMap = new Map<string, string>();
+export type SocketIdMap = Map<string, { id: string; apikey: string | null }>;
+
+const socketIdMap: SocketIdMap = new Map();
 
 export const initializeSocket = (io: Server) => {
   io.of('/socket.io').on('connection', (socket) => {
     socket.on('user_connected', (id: string, apikey?: string) => {
-      socketIdMap.set(id, socket.id);
+      socketIdMap.set(socket.id, { id, apikey: apikey ?? null });
+
       if (!apikey) {
-        const joinedConversations = getMapKeysByValue(apikeyMap, id);
-        socket.emit('joined_conversations', joinedConversations);
+        socket.join(id);
+        const activeIds = getMapKeys(socketIdMap, (v) => v.apikey === id);
+        socket.emit(
+          'joined_conversations',
+          activeIds.map((v) => socketIdMap.get(v)?.id),
+        );
         return;
       }
-      apikeyMap.set(id, apikey);
-      const clientSocketId = socketIdMap.get(apikey);
-      if (clientSocketId)
-        socket.to(clientSocketId).emit('joined_conversation', id);
+      socket.to(apikey).emit('joined_conversation', id);
     });
 
     socket.on('disconnect', () => {
-      const id = getMapKeyByValue(socketIdMap, socket.id);
-      socketIdMap.forEach((value, key) => {
-        if (value === socket.id) socketIdMap.delete(key);
-      });
-
-      const apikey = id ? apikeyMap.get(id) : null;
-      id && apikeyMap.delete(id);
-
-      const clientSocketId = apikey ? socketIdMap.get(apikey) : null;
-      if (clientSocketId)
-        socket.to(clientSocketId).emit('left_conversation', id);
+      const { apikey, id } = socketIdMap.get(socket.id) || {};
+      socketIdMap.delete(socket.id);
+      if (apikey) socket.to(apikey).emit('left_conversation', id);
     });
 
     conversationsSocket(socket, socketIdMap);
