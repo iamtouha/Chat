@@ -4,7 +4,7 @@ import {
   getConversations,
 } from '../providers/conversations.provider.js';
 import { createConversationSchema } from '../validators/conversation.validator.js';
-import { parseZodError } from '../lib/helpers.js';
+import { parseZodError } from '../lib/utils.js';
 import type { Request, Response } from 'express';
 
 export const createConversation = async (req: Request, res: Response) => {

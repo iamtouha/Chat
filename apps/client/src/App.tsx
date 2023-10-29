@@ -14,7 +14,10 @@ function App() {
   const user = useUserStore((state) => state.user);
   const setSocketConnected = useSocketStore((state) => state.setConnected);
   useEffect(() => {
-    if (!user?.apiKey) return;
+    if (!user?.apiKey) {
+      socket.disconnect();
+      return;
+    }
     socket.connect();
     const onSocketConnect = () => {
       console.log('connected');

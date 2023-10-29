@@ -4,7 +4,7 @@ import {
   updatePasswordSchema,
   updateAccountSchema,
 } from '../validators/auth.validator.js';
-import { getExceptionType, parseZodError } from '../lib/helpers.js';
+import { getExceptionType, parseZodError } from '../lib/utils.js';
 import { auth } from '../lib/lucia.js';
 
 export const getProfile = async (req: Request, res: Response) => {

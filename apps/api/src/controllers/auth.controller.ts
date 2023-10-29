@@ -3,12 +3,8 @@ import {
   loginInputSchema,
   registerInputSchema,
 } from '../validators/auth.validator.js';
-import {
-  createUser,
-  getUser,
-  updateUser,
-} from '../providers/users.provider.js';
-import { parseZodError, getExceptionType } from '../lib/helpers.js';
+import { updateUser } from '../providers/users.provider.js';
+import { parseZodError, getExceptionType } from '../lib/utils.js';
 import { auth } from '../lib/lucia.js';
 
 export const login = async (req: Request, res: Response) => {
@@ -45,12 +41,7 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error) {
     const { type, status, message } = getExceptionType(error);
-
-    return res.status(status).json({
-      status: 'error',
-      message,
-      type,
-    });
+    return res.status(status).json({ status: 'error', message, type });
   }
 };
 

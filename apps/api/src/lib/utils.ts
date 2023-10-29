@@ -47,19 +47,19 @@ export const getExceptionType = (error: unknown) => {
   return UnknownException;
 };
 
-export function getMapKeysByValue<T, U>(map: Map<T, U>, searchValue: U) {
+export function getMapKeysByValue<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
   const keys: T[] = [];
   for (const [key, value] of map) {
-    if (value === searchValue) {
+    if (cb(value)) {
       keys.push(key);
     }
   }
   return keys;
 }
 
-export function getMapKeyByValue<T, U>(map: Map<T, U>, searchValue: U) {
+export function getMapKeyByValue<T, U>(map: Map<T, U>, cb: (v: U) => boolean) {
   for (const [key, value] of map) {
-    if (value === searchValue) return key;
+    if (cb(value)) return key;
   }
   return null;
 }

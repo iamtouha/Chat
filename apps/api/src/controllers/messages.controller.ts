@@ -4,7 +4,7 @@ import {
   updateMessage,
 } from '../providers/messages.provider.js';
 import { messageInputSchema } from '../validators/message.validator.js';
-import { parseZodError } from '../lib/helpers.js';
+import { parseZodError } from '../lib/utils.js';
 import type { Request, Response } from 'express';
 
 export const createMessage = async (req: Request, res: Response) => {

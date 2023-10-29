@@ -7,7 +7,7 @@ import {
 } from '../providers/users.provider.js';
 import { auth } from '../lib/lucia.js';
 import { updateUserSchema } from '../validators/auth.validator.js';
-import { getExceptionType, parseZodError } from '../lib/helpers.js';
+import { getExceptionType, parseZodError } from '../lib/utils.js';
 
 export const makeAdmin = async (req: Request, res: Response) => {
   if (!req.user) return;
