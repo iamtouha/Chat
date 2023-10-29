@@ -27,3 +27,30 @@ export const FileCard = ({ file, onClose }: Props) => {
     </div>
   );
 };
+export const SidebarFileCard = ({
+  name,
+  src,
+  type,
+}: {
+  name: string;
+  src: string;
+  type: string;
+}) => {
+  return (
+    <a target="_blank" referrerPolicy="no-referrer" href={src}>
+      <Button
+        className="w-full flex justify-start gap-2 font-normal"
+        variant={'ghost'}
+      >
+        {type.startsWith('image/') ? (
+          <img src={src} alt={name} className="h-9 w-9 object-contain pl-1" />
+        ) : (
+          <Button variant={'outline'} disabled size={'icon'} className="px-1">
+            <Icons.file className="h-9 w-9" />
+          </Button>
+        )}
+        <p className="line-clamp-1">{name}</p>
+      </Button>
+    </a>
+  );
+};

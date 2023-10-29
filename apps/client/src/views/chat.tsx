@@ -10,24 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
-import { timeDifference, useQueryparams, cn } from '@/lib/utils';
+import { timeDifference, useQueryparams } from '@/lib/utils';
 import type { Conversation, FileData, Message, ResponsePayload } from '@/types';
 import socket from '@/socket';
 import { toast } from 'react-toastify';
 import { FileCard } from '@/components/file-card';
 import { useUserStore } from '@/store/userStore';
 import { useSocketStore } from '@/store/socketStore';
+import { ConversationPanel } from '@/components/conversation-panel';
+import { ConversationText } from '@/components/conversation-text';
 
 const ALLOWED_EXTENSIONS = ['png', 'jpeg', 'pdf', 'docx', 'csv', 'xlsm'];
 
@@ -62,7 +57,7 @@ export const ChatPage = () => {
   );
 
   const { data: conversation, isLoading } = useQuery(
-    ['conversation', params.get('id')],
+    ['conversations', params.get('id')],
     async () => {
       const res = await axios.get<
         ResponsePayload<Conversation & { messages: Message[] }>
@@ -226,7 +221,7 @@ export const ChatPage = () => {
                   <SheetTrigger className="rounded-full p-2 transition-colors hover:bg-secondary">
                     <Icons.panelRightOpen className="h-6 w-6" />
                   </SheetTrigger>
-                  <ClientDetails conversation={conversation} onSidebar />
+                  <ConversationPanel conversation={conversation} onSidebar />
                 </Sheet>
               </div>
             </CardHeader>
@@ -293,132 +288,9 @@ export const ChatPage = () => {
       </div>
       {conversation ? (
         <div className="hidden w-full max-w-xs xl:block">
-          <ClientDetails conversation={conversation} />
+          <ConversationPanel conversation={conversation} />
         </div>
       ) : null}
     </div>
-  );
-};
-
-export const ConversationText = ({
-  content,
-  type,
-  sender,
-  local,
-  time,
-}: {
-  content: string;
-  type: Message['contentType'];
-  sender?: boolean;
-  local?: boolean;
-  time: string;
-}) => {
-  const getFilename = () => {
-    if (type !== 'FILE') return '';
-    const key = content.split('/').pop()?.split('-');
-    if (!key) return '';
-    key.shift();
-    return key.join('-').replace(/%20/g, ' ');
-  };
-  return (
-    <div
-      className={cn(
-        'flex items-end gap-1',
-        sender ? 'flex-row-reverse text-right' : '',
-      )}
-      style={{ transform: 'translateZ(0)' }}
-    >
-      {
-        {
-          TEXT: (
-            <p
-              className={cn(
-                'conversation-text w-max  max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
-                sender ? 'bg-accent text-accent-foreground' : 'border',
-              )}
-            >
-              {content}
-            </p>
-          ),
-          IMAGE: local ? (
-            <p
-              className={cn(
-                'conversation-text flex items-center h-11 w-max max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
-                sender ? 'bg-accent text-accent-foreground' : 'border',
-              )}
-            >
-              <span>you {sender ? 'sent' : 'received'} an image</span>
-            </p>
-          ) : (
-            <img
-              className={cn(
-                'w-max max-w-[max(30vw,300px)] max-h-[300px] h-full object-contain border rounded-lg',
-              )}
-              src={content}
-            />
-          ),
-          FILE: (
-            <p
-              className={cn(
-                'conversation-text flex items-center h-11 w-max max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
-                sender ? 'bg-accent text-accent-foreground' : 'border',
-              )}
-            >
-              <Icons.file className="h-6 w-6 inline-block mr-2" />
-              {local ? (
-                <span>you {sender ? 'sent' : 'received'} a file</span>
-              ) : (
-                getFilename()
-              )}
-
-              <a href={content}>
-                {local ? null : (
-                  <Button variant={'ghost'} size={'sm'} className="py-0">
-                    <Icons.downlaod className="h-5 w-5" />
-                  </Button>
-                )}
-              </a>
-            </p>
-          ),
-          AUDIO: '',
-          VIDEO: '',
-        }[type]
-      }
-      <p className="text-xs mb-1 text-muted-foreground">
-        {dayjs(time).format('hh:mm a')}
-      </p>
-    </div>
-  );
-};
-
-const ClientDetails = ({
-  conversation,
-  onSidebar,
-}: {
-  conversation: Conversation;
-  onSidebar?: boolean;
-}) => {
-  return onSidebar ? (
-    <SheetContent className="w-[20rem] p-4 pt-6">
-      <SheetHeader>
-        <SheetTitle className="text-center text-xl font-bold">
-          {conversation.name}
-        </SheetTitle>
-        <SheetDescription className="text-center">
-          {conversation.email}
-        </SheetDescription>
-      </SheetHeader>
-    </SheetContent>
-  ) : (
-    <Card className={cn('h-full')}>
-      <CardHeader>
-        <CardTitle className="text-center text-xl font-bold">
-          {conversation.name}
-        </CardTitle>
-        <CardDescription className="text-center">
-          {conversation.email}
-        </CardDescription>
-      </CardHeader>
-    </Card>
   );
 };

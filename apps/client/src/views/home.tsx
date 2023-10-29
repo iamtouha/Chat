@@ -22,7 +22,7 @@ export const HomeView = () => {
     <div className="flex h-[calc(100vh-70px)] gap-5 md:h-[calc(100vh-80px)]">
       <section
         aria-label="Chat List"
-        className="hidden w-full max-w-xs flex-none md:block xl:max-w-sm"
+        className="hidden w-full max-w-xs flex-none md:block"
       >
         <ResponsiveChatList />
       </section>

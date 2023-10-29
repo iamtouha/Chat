@@ -65,10 +65,16 @@ import {
   ShieldCheck,
   Inbox,
   Gauge,
+  StarOff,
+  Archive,
+  ArchiveX,
 } from 'lucide-react';
 
 export const Icons = {
   inbox: Inbox,
+  starOff: StarOff,
+  archive: Archive,
+  archiveX: ArchiveX,
   gauge: Gauge,
   shieldCheck: ShieldCheck,
   file: FileIcon,

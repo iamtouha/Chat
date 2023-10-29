@@ -94,7 +94,7 @@ export const fetchConversation = async (req: Request, res: Response) => {
 
 export const starConversation = async (req: Request, res: Response) => {
   const data = req.body;
-  if (!data.starred || typeof data.starred !== 'boolean') {
+  if (typeof data.starred !== 'boolean') {
     return res
       .status(400)
       .json({ status: 'error', message: 'Invalid request payload' });
@@ -102,7 +102,7 @@ export const starConversation = async (req: Request, res: Response) => {
 
   const result = await updateConversation({
     where: { id: req.params.id },
-    data: { starred: !data.starred },
+    data: { starred: data.starred },
   });
 
   return res.status(200).json({
@@ -113,7 +113,7 @@ export const starConversation = async (req: Request, res: Response) => {
 };
 export const archiveConversation = async (req: Request, res: Response) => {
   const data = req.body;
-  if (!data.archived || typeof data.archived !== 'boolean') {
+  if (typeof data.archived !== 'boolean') {
     return res
       .status(400)
       .json({ status: 'error', message: 'Invalid request payload' });
@@ -121,7 +121,7 @@ export const archiveConversation = async (req: Request, res: Response) => {
 
   const result = await updateConversation({
     where: { id: req.params.id },
-    data: { archived: !data.archived },
+    data: { archived: data.archived },
   });
 
   return res.status(200).json({

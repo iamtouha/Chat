@@ -58,7 +58,7 @@ const ChatList = () => {
   );
 
   useQuery(
-    ['chats'],
+    ['conversations'],
     async () => {
       const res = await axios.get<
         ResponsePayload<(Conversation & { messages: Message[] })[]>
@@ -201,6 +201,7 @@ const ChatList = () => {
             seen={conversation.messages[0]?.seen ?? false}
             time={conversation.messages[0]?.createdAt ?? conversation.createdAt}
             active={activeConversations.includes(conversation.id)}
+            starred={conversation.starred}
             chatId={conversation.id}
           />
         ))}
@@ -221,6 +222,7 @@ export const ChatCard = ({
   time,
   seen,
   active,
+  starred,
 }: {
   chatId: string;
   active?: boolean;
@@ -228,6 +230,7 @@ export const ChatCard = ({
   text: string;
   time: string;
   seen: boolean;
+  starred: boolean;
 }) => {
   const params = useQueryparams();
   const timeDiff = useMemo(() => timeDifference(time), [time]);
@@ -248,7 +251,10 @@ export const ChatCard = ({
               active ? 'chat-active' : '',
             )}
           >
-            {name}
+            <div className="flex items-center gap-2">
+              {name}
+              {starred ? <Icons.star className="h-3 w-3" /> : null}
+            </div>
           </CardTitle>
           <CardDescription className={cn('flex text-xs')}>
             <span className={cn('line-clamp-1', seen ? '' : 'font-bold')}>

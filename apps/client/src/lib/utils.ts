@@ -27,3 +27,9 @@ export const timeDifference = (time: Date | string) => {
   const years = dayjs().diff(dayjs(time), 'year');
   return `${years}y`;
 };
+export const getFilename = (content: string) => {
+  const key = content.split('/').pop()?.split('-');
+  if (!key) return '';
+  key.shift();
+  return key.join('-').replace(/%20/g, ' ');
+};
