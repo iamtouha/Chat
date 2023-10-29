@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "lib": ["es2021", "dom", "dom.iterable"],
     "declaration": true,
-    "declarationMap": true,
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "removeComments": true,
