@@ -1,4 +1,8 @@
-import { aggregateFileData, newFileData } from '../providers/files.provider.js';
+import {
+  aggregateFileData,
+  getFileDatas,
+  newFileData,
+} from '../providers/files.provider.js';
 import type { Request, Response } from 'express';
 
 type S3File = Express.Multer.File & { location: string; key: string };
@@ -45,4 +49,17 @@ export const countSize = async (req: Request, res: Response) => {
     status: 'success',
     result: data._sum.size ?? 0,
   });
+};
+
+export const getFiles = async (req: Request, res: Response) => {
+  if (!req.user) return;
+  const conversationId = req.query.conversationId as string;
+  if (!conversationId) {
+    const files = await getFileDatas({ where: { clientId: req.user.id } });
+    return res.status(200).send({ status: 'success', result: files });
+  }
+  const files = await getFileDatas({
+    where: { clientId: req.user.id, message: { conversationId } },
+  });
+  return res.status(200).send({ status: 'success', result: files });
 };

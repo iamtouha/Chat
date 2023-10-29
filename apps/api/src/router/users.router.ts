@@ -4,6 +4,7 @@ import {
   makeInitialAdmin,
   updateAccount,
   updatePassword,
+  getSessions,
 } from '../controllers/users.controller.js';
 import {
   makeAdmin,
@@ -20,6 +21,8 @@ import { isAdmin } from '../middlewares/auth.middleware.js';
 const usersRouter: Router = Router();
 
 usersRouter.get('/profile', getProfile);
+usersRouter.get('/sessions', getSessions);
+
 usersRouter.post('/make-admin', makeInitialAdmin);
 usersRouter.put('/update', updateAccount);
 usersRouter.put('/update-password', updatePassword);

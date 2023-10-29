@@ -20,6 +20,7 @@ export const login = async (req: Request, res: Response) => {
     const { username, password } = result.data;
 
     const key = await auth.useKey('username', username.toLowerCase(), password);
+
     const session = await auth.createSession({
       userId: key.userId,
       attributes: {},

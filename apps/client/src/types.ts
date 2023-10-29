@@ -17,6 +17,8 @@ export type Conversation = {
   name: string;
   email: string;
   phone: string | null;
+  starred: boolean;
+  archived: boolean;
   userId: string;
   createdAt: string;
   lastActive: string;

@@ -39,6 +39,21 @@ export const getProfile = async (req: Request, res: Response) => {
   });
 };
 
+export const getSessions = async (req: Request, res: Response) => {
+  if (!req.user)
+    return res.status(403).json({
+      status: 'error',
+      message: 'Unauthorized',
+    });
+  const sessions = await auth.getAllUserSessions(req.user.userId);
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'User profile retrieved successfully',
+    result: sessions,
+  });
+};
+
 export const makeInitialAdmin = async (req: Request, res: Response) => {
   if (!req.user) return;
   const existingAdmin = await getUser({ where: { role: 'ADMIN' } });

@@ -27,6 +27,8 @@ model User {
 model Session {
   id             String @id @unique
   user_id        String
+  device         String?
+  location       String?
   active_expires BigInt
   idle_expires   BigInt
   user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
@@ -43,12 +45,6 @@ model Key {
   @@index([user_id])
 }
 
-model RevokedToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  createdAt DateTime @default(now())
-}
-
 model Conversation {
   id         String   @id @default(uuid())
   name       String
@@ -56,6 +52,8 @@ model Conversation {
   phone      String?
   userId     String
   user       User @relation(fields: [userId], references: [id])
+  starred    Boolean  @default(false)
+  archived   Boolean  @default(false)
   messages   Message[]
   createdAt  DateTime @default(now())
   lastActive DateTime @default(now())

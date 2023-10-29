@@ -97,8 +97,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       '@types/node':
-        specifier: ^15.12.2
-        version: 15.14.9
+        specifier: ^20.8.9
+        version: 20.8.9
       eslint:
         specifier: ^7.32.0
         version: 7.32.0
@@ -110,7 +110,7 @@ importers:
         version: 5.4.1
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@15.14.9)(typescript@5.2.2)
+        version: 10.9.1(@types/node@20.8.9)(typescript@5.2.2)
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -194,8 +194,8 @@ importers:
         version: 4.4.2(@types/react@18.2.24)(react@18.2.0)
     devDependencies:
       '@types/node':
-        specifier: ^20.8.4
-        version: 20.8.7
+        specifier: ^20.8.9
+        version: 20.8.9
       '@types/react':
         specifier: ^18.2.15
         version: 18.2.24
@@ -237,7 +237,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@20.8.7)
+        version: 4.4.9(@types/node@20.8.9)
 
   apps/widget-test:
     dependencies:
@@ -250,7 +250,7 @@ importers:
         version: 5.2.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.9(@types/node@20.8.7)
+        version: 4.4.9(@types/node@20.8.9)
 
   packages/chat-widget:
     dependencies:
@@ -2633,7 +2633,7 @@ packages:
     resolution: {integrity: sha512-oyl4jvAfTGX9Bt6Or4H9ni1Z447/tQuxnZsytsCaExKlmJiU8sFgnIBRzJUpKwB5eWn9HuBYlUlVA74q/yN0eQ==}
     dependencies:
       '@types/connect': 3.4.36
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
     dev: true
 
   /@types/compression@1.7.3:
@@ -2645,7 +2645,7 @@ packages:
   /@types/connect@3.4.36:
     resolution: {integrity: sha512-P63Zd/JUGq+PdrM1lv0Wv5SBYeA2+CORvbrXbngriYY0jzLUWfQMQQxOhjONEz/wlHOAxOdY7CY65rgQdTjq2w==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
     dev: true
 
   /@types/cookie-parser@1.4.4:
@@ -2661,12 +2661,12 @@ packages:
   /@types/cors@2.8.14:
     resolution: {integrity: sha512-RXHUvNWYICtbP6s18PnOCaqToK8y14DnLd75c6HfyKf228dxy7pHNOQkxPtvXKp/hINFMDjbYzsj63nnpPMSRQ==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
 
   /@types/express-serve-static-core@4.17.37:
     resolution: {integrity: sha512-ZohaCYTgGFcOP7u6aJOhY9uIZQgZ2vxC2yWoArY+FeDXlqeH66ZVBjgvg+RLVAS/DWNq4Ap9ZXu1+SUQiiWYMg==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
       '@types/qs': 6.9.8
       '@types/range-parser': 1.2.5
       '@types/send': 0.17.2
@@ -2700,7 +2700,7 @@ packages:
   /@types/morgan@1.9.6:
     resolution: {integrity: sha512-xfKogz5WcKww2DAiVT9zxMgrqQt+Shq8tDVeLT+otoj6dJnkRkyJxMF51mHtUc3JCPKGk5x1EBU0buuGpfftlQ==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
     dev: true
 
   /@types/multer-s3@3.0.1:
@@ -2718,14 +2718,10 @@ packages:
       '@types/express': 4.17.18
     dev: true
 
-  /@types/node@15.14.9:
-    resolution: {integrity: sha512-qjd88DrCxupx/kJD5yQgZdcYKZKSIGBVDIBE1/LTGcNm3d2Np/jxojkdePDdfnBHJc5W7vSMpbJ1aB7p/Py69A==}
-    dev: true
-
-  /@types/node@20.8.7:
-    resolution: {integrity: sha512-21TKHHh3eUHIi2MloeptJWALuCu5H7HQTdTrWIFReA8ad+aggoX+lRes3ex7/FtpC+sVUpFMQ+QTfYr74mruiQ==}
+  /@types/node@20.8.9:
+    resolution: {integrity: sha512-UzykFsT3FhHb1h7yD4CA4YhBHq545JC0YnEz41xkipN88eKQtL6rSgocL5tbAP6Ola9Izm/Aw4Ora8He4x0BHg==}
     dependencies:
-      undici-types: 5.25.3
+      undici-types: 5.26.5
 
   /@types/prop-types@15.7.8:
     resolution: {integrity: sha512-kMpQpfZKSCBqltAJwskgePRaYRFukDkm1oItcAbC3gNELR20XIBcN9VRgg4+m8DKsTfkWeA4m4Imp4DDuWy7FQ==}
@@ -2761,7 +2757,7 @@ packages:
     resolution: {integrity: sha512-aAG6yRf6r0wQ29bkS+x97BIs64ZLxeE/ARwyS6wrldMm3C1MdKwCcnnEwMC1slI8wuxJOpiUH9MioC0A0i+GJw==}
     dependencies:
       '@types/mime': 1.3.3
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
     dev: true
 
   /@types/serve-static@1.15.3:
@@ -2769,7 +2765,7 @@ packages:
     dependencies:
       '@types/http-errors': 2.0.2
       '@types/mime': 3.0.2
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
     dev: true
 
   /@types/trusted-types@2.0.4:
@@ -2783,7 +2779,7 @@ packages:
   /@types/whatwg-url@8.2.2:
     resolution: {integrity: sha512-FtQu10RWgn3D9U4aazdwIE2yzphmTJREDqNdODHrbrZmmMqI0vMheC/6NE/J1Yveaj8H+ela+YwWTjq5PGmuhA==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
       '@types/webidl-conversions': 7.0.2
     dev: false
 
@@ -2929,7 +2925,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.22.5(@babel/core@7.23.0)
       '@types/babel__core': 7.20.2
       react-refresh: 0.14.0
-      vite: 4.4.9(@types/node@20.8.7)
+      vite: 4.4.9(@types/node@20.8.9)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3669,7 +3665,7 @@ packages:
     dependencies:
       '@types/cookie': 0.4.1
       '@types/cors': 2.8.14
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.4.2
@@ -5849,7 +5845,7 @@ packages:
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  /ts-node@10.9.1(@types/node@15.14.9)(typescript@5.2.2):
+  /ts-node@10.9.1(@types/node@20.8.9)(typescript@5.2.2):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -5868,7 +5864,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 15.14.9
+      '@types/node': 20.8.9
       acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.3
@@ -5980,8 +5976,8 @@ packages:
     resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
     dev: true
 
-  /undici-types@5.25.3:
-    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
+  /undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   /unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
@@ -6082,7 +6078,7 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /vite@4.4.9(@types/node@20.8.7):
+  /vite@4.4.9(@types/node@20.8.9):
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -6110,7 +6106,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 20.8.9
       esbuild: 0.18.20
       postcss: 8.4.31
       rollup: 3.29.4
