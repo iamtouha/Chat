@@ -52,7 +52,7 @@ export const ConversationPanel = ({
         <CardDescription className="text-center">
           {conversation.email}
         </CardDescription>
-        <CardContent className="px-0">
+        <CardContent className="px-0 pb-0">
           <PanelContent
             conversationId={conversation.id}
             starred={conversation.starred}

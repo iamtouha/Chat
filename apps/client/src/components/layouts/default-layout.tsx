@@ -5,7 +5,7 @@ export const DefaultLayout = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <Header />
-      <div className="px-2 pt-2 lg:pt-4">{children}</div>
+      <div className="px-2 pt-2">{children}</div>
     </>
   );
 };
