@@ -10,6 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
@@ -21,21 +23,51 @@ import { useSocketStore } from '@/store/socketStore';
 
 export const ResponsiveChatList = ({ onSidebar }: { onSidebar?: boolean }) => {
   return onSidebar ? (
-    <SheetContent side={'left'} className="p-4">
+    <SheetContent side={'left'} className="p-3">
       <div className="mt-6 flex h-full flex-col">
-        <ChatList />
+        <Tabs defaultValue="all">
+          <TabsList>
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="starred">Starred</TabsTrigger>
+            <TabsTrigger value="archived">Archived</TabsTrigger>
+          </TabsList>
+          <TabsContent value="all">
+            <ChatList type="all" />
+          </TabsContent>
+          <TabsContent value="starred">
+            <ChatList type="starred" />
+          </TabsContent>
+          <TabsContent value="archived">
+            <ChatList type="archived" />
+          </TabsContent>
+        </Tabs>
       </div>
     </SheetContent>
   ) : (
     <Card className="h-full">
-      <CardContent className="flex h-full flex-col p-4">
-        <ChatList />
+      <CardContent className="flex h-full flex-col p-3">
+        <Tabs defaultValue="all">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="starred">Starred</TabsTrigger>
+            <TabsTrigger value="archived">Archived</TabsTrigger>
+          </TabsList>
+          <TabsContent value="all">
+            <ChatList type="all" />
+          </TabsContent>
+          <TabsContent value="starred">
+            <ChatList type="starred" />
+          </TabsContent>
+          <TabsContent value="archived">
+            <ChatList type="archived" />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
 };
 
-const ChatList = () => {
+const ChatList = ({ type }: { type: 'starred' | 'archived' | 'all' }) => {
   const [searchText, setSearchText] = useState('');
   const params = useQueryparams();
   const [conversations, setConversations] = useState<
@@ -77,7 +109,13 @@ const ChatList = () => {
   );
 
   const sortedConversations = useMemo(() => {
-    return conversations
+    const filtered =
+      type === 'all'
+        ? conversations.filter((item) => !item.archived)
+        : conversations.filter((item) =>
+            type === 'starred' ? item.starred : item.archived,
+          );
+    return filtered
       .sort((a, b) => {
         const aTime = a.messages[0]?.createdAt ?? a.createdAt;
         const bTime = b.messages[0]?.createdAt ?? b.createdAt;
@@ -86,7 +124,7 @@ const ChatList = () => {
       .filter((conv) => {
         return conv.name.toLowerCase().includes(searchText.toLowerCase());
       });
-  }, [conversations, searchText]);
+  }, [conversations, searchText, type]);
 
   useEffect(() => {
     if (!socketConnected) return;
@@ -177,7 +215,7 @@ const ChatList = () => {
 
   return (
     <>
-      <div className="mb-6 flex w-full flex-initial items-center space-x-2">
+      <div className="mb-2 flex w-full flex-initial items-center space-x-2">
         <Input
           type="text"
           placeholder="Search Client"
@@ -188,7 +226,12 @@ const ChatList = () => {
           <Icons.search className="h-5 w-5" />
         </Button>
       </div>
-      <div className="flex-auto space-y-2 overflow-y-auto pb-4 relative">
+      <div className="flex-auto space-y-2 overflow-y-auto relative">
+        {sortedConversations.length === 0 ? (
+          <p className="text-sm text-center mt-2 py-2 rounded-sm bg-muted text-muted-foreground">
+            No conversations found
+          </p>
+        ) : null}
         {sortedConversations.map((conversation) => (
           <ChatCard
             key={conversation.id}

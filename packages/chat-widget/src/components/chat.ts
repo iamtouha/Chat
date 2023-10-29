@@ -294,15 +294,9 @@ export class ChatComponent extends LitElement {
         color: var(--im-text-color);
         container-type: inline-size;
       }
-      .chat-messages {
-        overflow-y: auto;
-        padding: 10px;
-      }
       .chat-box {
         padding: 10px;
-        overflow-y: auto;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
+        overflow-y: scroll;
         display: flex;
         flex-direction: column-reverse;
         gap: 5px;
@@ -376,15 +370,6 @@ export class ChatComponent extends LitElement {
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
         overflow: hidden;
-      }
-      ::-webkit-scrollbar {
-        width: 12px;
-      }
-      ::-webkit-scrollbar-thumb {
-        border: 4px solid rgba(0, 0, 0, 0);
-        background-clip: padding-box;
-        border-radius: 9999px;
-        background-color: var(--im-muted-text-color);
       }
       @container (min-width: 600px) {
         .filename {

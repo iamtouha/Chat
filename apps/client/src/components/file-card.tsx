@@ -43,13 +43,13 @@ export const SidebarFileCard = ({
         variant={'ghost'}
       >
         {type.startsWith('image/') ? (
-          <img src={src} alt={name} className="h-9 w-9 object-contain pl-1" />
+          <img src={src} alt={name} className="h-9 w-9 object-contain block" />
         ) : (
-          <Button variant={'outline'} disabled size={'icon'} className="px-1">
-            <Icons.file className="h-9 w-9" />
-          </Button>
+          <span className="h-9 w-9 block p-1">
+            <Icons.file className="h-6 w-6" />
+          </span>
         )}
-        <p className="line-clamp-1">{name}</p>
+        <p className="w-full line-clamp-1 text-start">{name}</p>
       </Button>
     </a>
   );

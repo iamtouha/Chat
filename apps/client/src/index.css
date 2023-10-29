@@ -99,7 +99,7 @@
   color: hsl(var(--success));
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 15px;
 }
 ::-webkit-scrollbar-thumb {
@@ -107,4 +107,8 @@
   background-clip: padding-box;
   border-radius: 9999px;
   background-color: hsl(var(--muted-foreground));
+} */
+
+::-webkit-scrollbar {
+  display: none;
 }

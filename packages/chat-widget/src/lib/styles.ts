@@ -6,6 +6,10 @@ export const baseStyles = css`
     font-family: sans-serif;
     color: var(--im-text-color);
   }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;

@@ -156,7 +156,7 @@ const PanelContent = ({
           size={'sm'}
           variant={'outline'}
           disabled={setArchive.isLoading}
-          aria-label="star conversation"
+          aria-label="archive conversation"
           onClick={() => setArchive.mutate()}
         >
           {archived ? (
@@ -176,21 +176,23 @@ const PanelContent = ({
         <h2 className="font-bold mb-2 mt-4">Files in conversation</h2>
 
         {filesQuery.data?.length === 0 ? (
-          <p className="text-sm text-center mt-2 py-2 rounded-sm bg-muted">
+          <p className="text-sm text-center mt-2 py-2 rounded-sm bg-muted text-muted-foreground">
             No files found
           </p>
         ) : null}
         {filesQuery.isLoading ? <p className="text-sm">Loading...</p> : null}
-        <div className="h-[28rem] lg:h-[25rem] overflow-y-auto">
-          {filesQuery.data?.map((file) => (
-            <SidebarFileCard
-              key={file.id}
-              name={file.name}
-              src={file.location}
-              type={file.mimeType}
-            ></SidebarFileCard>
-          ))}
-        </div>
+        {filesQuery.data?.length ? (
+          <div className="h-[28rem] lg:h-[25rem] overflow-y-auto">
+            {filesQuery.data.map((file) => (
+              <SidebarFileCard
+                key={file.id}
+                name={file.name}
+                src={file.location}
+                type={file.mimeType}
+              ></SidebarFileCard>
+            ))}
+          </div>
+        ) : null}
       </div>
     </>
   );
