@@ -55,17 +55,19 @@ export const ConversationText = ({
             />
           ),
           FILE: (
-            <p
+            <div
               className={cn(
                 'conversation-text flex items-center h-11 w-max max-w-[max(30vw,300px)] rounded-lg px-3 py-1',
                 sender ? 'bg-accent text-accent-foreground' : 'border',
               )}
             >
-              <Icons.file className="h-6 w-6 inline-block mr-2" />
+              <Icons.file className="h-6 max-w-[24px] w-full inline-block mr-2" />
               {local ? (
                 <span>you {sender ? 'sent' : 'received'} a file</span>
               ) : (
-                getFilename(content)
+                <p className={'text-left line-clamp-1'}>
+                  {getFilename(content)}
+                </p>
               )}
 
               <a href={content}>
@@ -75,7 +77,7 @@ export const ConversationText = ({
                   </Button>
                 )}
               </a>
-            </p>
+            </div>
           ),
           AUDIO: '',
           VIDEO: '',

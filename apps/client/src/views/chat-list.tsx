@@ -241,7 +241,7 @@ const ChatList = ({ type }: { type: 'starred' | 'archived' | 'all' }) => {
                 ? getSummary(conversation.messages[0])
                 : 'started a conversation'
             }
-            seen={conversation.messages[0]?.seen ?? false}
+            seen={conversation.messages[0]?.seen ?? true}
             time={conversation.messages[0]?.createdAt ?? conversation.createdAt}
             active={activeConversations.includes(conversation.id)}
             starred={conversation.starred}

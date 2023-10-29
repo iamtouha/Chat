@@ -43,7 +43,11 @@ export const SidebarFileCard = ({
         variant={'ghost'}
       >
         {type.startsWith('image/') ? (
-          <img src={src} alt={name} className="h-9 w-9 object-contain block" />
+          <img
+            src={src}
+            alt={name}
+            className="h-9 w-9 overflow-hidden object-contain block"
+          />
         ) : (
           <span className="h-9 w-9 block p-1">
             <Icons.file className="h-6 w-6" />
